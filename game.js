@@ -45,31 +45,16 @@ var gameState = {
         
         //  The platforms group contains the ground platforms
         this.platforms = game.add.group();
-    
-        //  We will enable physics for any object that is created in this group
-        this.platforms.enableBody = true;
-    
-        // Here we create the ground.
-        this.ground = this.platforms.create(0, game.world.height - 32, 'platform');
-    
-        //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-        this.ground.scale.setTo(game.world.width, 1);
-    
-        //  This stops it from falling away when you jump on it
-        this.ground.body.immovable = true;
-    
-        //  Now let's create two ledges
-        this.ledge = this.platforms.create(400, 400, 'platform');
-        this.ledge.body.immovable = true;
-    
-        this.ledge = this.platforms.create(150, 250, 'platform');
-        this.ledge.body.immovable = true;
+        this.cloudPlatforms = game.add.group();
+        this.setupPlatforms();
+       
  
         // Setting the bounds of the world
         game.world.setBounds(0, 0, 1600, 600);
         
         // Player & Enemies
         this.setupPlayer();
+        this.setupEnemies();
         
         // Setting up the camera to focus on the player
         game.camera.follow(this.player);
@@ -86,6 +71,88 @@ var gameState = {
         
         // Starts the music playing
         this.music.play();
+        
+    },
+    setupEnemies: function(){
+        
+        // Adding in the enemies group
+        this.enemies = game.add.group();
+        
+        //  We will enable physics for any object that is created in this group
+        this.enemies.enableBody = true;
+        
+        
+        /**
+         * Creating Individual Enemies
+         */
+         
+        // This is how to instantiate an Enemy
+        this.enemyGenerator(50, 50, 'right');
+        this.enemyGenerator(60, 60, 'left');
+        this.enemyGenerator(100, 100, 'right');
+        this.enemyGenerator(300, 300, 'left');
+    },
+    enemyGenerator: function(x, y, direction){
+        this.enemy = this.enemies.create(x,y,'enemy');
+        this.enemy.body.gravity.y = 300;
+        this.enemy.body.bounce.set(1, 0.2);
+        this.enemy.body.collideWorldBounds = true;
+        //  Our two animations, walking left and right.
+        this.enemy.animations.add('left', [0, 1], 10, true);
+        this.enemy.animations.add('right', [2, 3], 10, true);
+        // This will set them off in the direction wanted 
+        if(direction == 'right'){
+            this.enemy.animations.play('right', 10, true); // get enemy moving
+            this.enemy.body.velocity.setTo(150);  
+        }else if(direction == 'left'){
+            this.enemy.animations.play('left', 10, true); // get enemy moving
+            this.enemy.body.velocity.setTo(-150);  
+        }
+        if(this.enemy.body.velocity.x==150){
+             this.enemy.animations.play('right', 10, true); // get enemy moving
+        }else if(this.enemy.body.velocity.x== -150){
+            this.enemy.animations.play('left', 10, true); // get enemy moving
+        }
+    },
+    setupPlatforms: function(){
+        
+        /**
+         * General Setup
+         */
+         
+        //  We will enable physics for any object that is created in this group
+        this.platforms.enableBody = true;
+        
+        /**
+         * Ground
+         */
+        
+        // Here we create the ground.
+        this.ground = this.platforms.create(0, game.world.height - 32, 'platform');
+        //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
+        this.ground.scale.setTo(game.world.width, 1);
+        //  This stops it from falling away when you jump on it
+        this.ground.body.immovable = true;
+        
+        /**
+         * Platforms
+         */
+        
+        //  Creating two ledges
+        this.ledge = this.platforms.create(400, 400, 'platform');
+        this.ledge.body.immovable = true;
+        
+        this.ledge = this.platforms.create(150, 250, 'platform');
+        this.ledge.body.immovable = true;  
+        
+        /**
+         * Cloud Platforms
+         */
+         
+        //  We will enable physics for any object that is created in this group
+        this.cloudPlatforms.enableBody = true;
+        // Here we create the ground.
+        this.cloud = this.cloudPlatforms.create(600, 400, 'cloud');
         
     },
     setupPlayer: function(){
@@ -169,6 +236,18 @@ var gameState = {
            // Add in the SFX sound for jumping
            this.SFXJump.play('', 0, 0.3);
         }
+        
+        /**
+         * Enemy update functions
+         */
+         
+        if(this.enemy.body.velocity.x==150){
+             this.enemy.animations.play('right', 10, true); // get enemy moving
+        }else if(this.enemy.body.velocity.x== -150){
+            this.enemy.animations.play('left', 10, true); // get enemy moving
+        }
+        
+        
     }, 
     toggleMusic: function() {
         this.musicIcon.alpha = 1;
