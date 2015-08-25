@@ -19,10 +19,17 @@ var gameState = {
         // Add in all assets
         
         // Game art
-        var background = game.add.tileSprite(0, 0, 800, 600, 'snow'); 
+        var background = game.add.tileSprite(0, 0, 1600, 600, 'snow'); 
+        // Setting the bounds of the world
+        game.world.setBounds(0, 0, 1600, 600);
+        
+        
         
         // Player & Enemies
         this.setupPlayer();
+        
+        // Setting up the camera to focus on the player
+        game.camera.follow(this.player);
         
         // Sounds
         
