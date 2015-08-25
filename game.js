@@ -108,11 +108,14 @@ var gameState = {
             this.enemy.animations.play('left', 10, true); // get enemy moving
             this.enemy.body.velocity.setTo(-150);  
         }
-        if(this.enemy.body.velocity.x==150){
-             this.enemy.animations.play('right', 10, true); // get enemy moving
-        }else if(this.enemy.body.velocity.x== -150){
-            this.enemy.animations.play('left', 10, true); // get enemy moving
-        }
+        
+    },
+    enemyAnimations: function(enemy){
+      if(enemy.body.velocity.x==150){
+             enemy.animations.play('right', 10, true); // get enemy moving
+        }else if(enemy.body.velocity.x== -150){
+            enemy.animations.play('left', 10, true); // get enemy moving
+        }  
     },
     setupPlatforms: function(){
         
@@ -240,12 +243,10 @@ var gameState = {
         /**
          * Enemy update functions
          */
+        
+        this.enemies.forEach(this.enemyAnimations, this);
          
-        if(this.enemy.body.velocity.x==150){
-             this.enemy.animations.play('right', 10, true); // get enemy moving
-        }else if(this.enemy.body.velocity.x== -150){
-            this.enemy.animations.play('left', 10, true); // get enemy moving
-        }
+        
         
         
     }, 
