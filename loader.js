@@ -15,12 +15,14 @@ var loaderState = {
          **/ 
          
         // Sprites
-        game.load.spritesheet('dude', '/assets/images/player.png', 32, 48);
+        game.load.spritesheet('player', '/assets/images/player.png', 32, 48);
         game.load.spritesheet('enemy', '/assets/images/enemy.png', 32, 32);
             
         // Backgrounds
         game.load.image('snow', '/assets/images/snow.png');
         game.load.image('transition', '/assets/images/transition.png');
+        
+        game.load.audio('gameMusic','assets/sound/game-music.mp3');
         
         // Platforms
         game.load.image('platform', '/assets/images/platform.png');
@@ -47,7 +49,7 @@ var loaderState = {
         game.load.audio('hitEnemy','assets/sound/thud.wav');
         
         //Music
-        game.load.audio('gameMusic','assets/sound/game-music.mp3');
+        
         game.load.audio('introMusic','assets/sound/intro-music.wav');
         game.load.audio('victoryMusic','assets/sound/victory-music.mp3');
         
@@ -57,27 +59,12 @@ var loaderState = {
        
         
     },
-    
-    transition: function(){
-        
-        var transition = game.add.image(0,0, 'transition');
-        transition.alpha = 0;
-        // to(properties, duration, ease, autoStart, delay, repeat, yoyo)
-        game.add.tween(transition).to( { alpha: 1 }, 5000, Phaser.Easing.Linear.None, true, 0, 0, true);
-    },
-    
-    create: function () {
-        // Create a tween, and fade it in, try to get the duration the same as yah
-        setTimeout(this.transition, 2000)
-        
-        //game.state.start('menu');
-    },
     update: function(){
         if (this.cache.isSoundDecoded('introMusic') )
 		{
 			// now you can safely change state and music will play instantly on desktop (mobile still requires a touch unlock though 
 			// (Need to look this up later))
-			game.state.start('menu');
+		game.state.start('menu');
 		}
     }
 };
