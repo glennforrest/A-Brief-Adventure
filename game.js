@@ -39,6 +39,7 @@ var gameState = {
         this.musicIcon.events.onInputDown.add(this.toggleMusic, this);
         
         
+        
         /**
          * Setting up platforms and ground
          */
@@ -59,6 +60,7 @@ var gameState = {
         
         
         // Sounds
+        this.mute = false;
         this.SFXJump = game.add.audio('jump');
         this.SFXFootstep = game.add.audio('step');
         this.SFXLavaDrip = game.add.audio('lavaDrip');
@@ -179,7 +181,10 @@ var gameState = {
         // Removes the player from the screen
         this.player.kill();
         // Play the death sound
-        this.SFXDeath.play();
+        if(this.mute == false){
+            this.SFXDeath.play();    
+        }
+        
         this.setupPlayer();
     
 
@@ -189,6 +194,11 @@ var gameState = {
          if(!this.music.isPlaying){
             this.music.play();
         }
+        
+        
+        // Adding the event listener and calling toggleMusic method
+        this.SFXIcon.events.onInputDown.add(this.toggleSFX, this);
+        
         
         /**
          * Collisions and overlaps
@@ -216,7 +226,10 @@ var gameState = {
             if(this.player.body.touching.down){
                 // Need to find a way to make sure that if the Footstep
                 // is playing, that 
-                 this.SFXFootstep.play('', 0, 0.4, false, false);
+                if(this.mute == false){
+                 this.SFXFootstep.play('', 0, 0.4, false, false);   
+                }
+                 
             }
         }
         else if (this.cursors.right.isDown)
@@ -227,7 +240,9 @@ var gameState = {
             if(this.player.body.touching.down){
                 // Need to find a way to make sure that if the Footstep
                 // is playing, that 
-                 this.SFXFootstep.play('', 0, 0.4, false, false);
+                if(this.mute == false){
+                    this.SFXFootstep.play('', 0, 0.4, false, false);   
+                }
             }
         }
         else
@@ -238,11 +253,12 @@ var gameState = {
         }
         
         //  Allow the player to jump if they are touching the ground.
-        if (this.cursors.up.isDown && this.player.body.touching.down)
-        {
+        if (this.cursors.up.isDown && this.player.body.touching.down){
             this.player.body.velocity.y = -350;
-           // Add in the SFX sound for jumping
-           this.SFXJump.play('', 0, 0.3);
+            // Add in the SFX sound for jumping
+            if(this.mute == false){
+                this.SFXJump.play('', 0, 0.3);
+            }
         }
         
         /**
@@ -262,6 +278,21 @@ var gameState = {
             this.music.volume = 0;
         }else{
             this.music.volume = 1;
+        }
+    },
+    hoverOver: function(){
+        this.musicIcon.alpha = 0.8;
+    },
+    onBlur: function(){
+        this.musicIcon.alpha = 0.5;
+    },
+    toggleSFX: function() {
+        this.SFXIcon.alpha = 1;
+        
+        if(this.mute == false){
+            this.mute = true;
+        }else if(this.mute == true){
+            this.mute = false;
         }
     },
     hoverOver: function(){
