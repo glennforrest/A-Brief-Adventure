@@ -13,13 +13,19 @@ var menuState = {
 
         // Play intro music
         this.music = game.add.audio('introMusic');
+        // Loop play(marker, position, volume, loop, forceRestart)
         this.music.play();
-        
+    
         // Mapping the Up key
         var wKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
         
         // Event Listener calling the Start function to begin the game
         wKey.onDown.addOnce(this.start, this);
+    },
+    update: function(){
+        if(!this.music.isPlaying){
+            this.music.play();
+        }    
     },
     start: function () {
         // Stops the music
