@@ -1,13 +1,13 @@
 /* global game */
 
 var loaderState = {
+    
     preload: function () {
         
         game.add.sprite(0, 0, 'space');
         game.add.sprite(200, 200, 'loadingBarContainer');
         // Adding a loading text onto the screen
-        var loadingLabel = game.add.text(80, 150, 'loading...', 
-                                        {font: '30px Courier', fill: '#ffffff'});
+        game.add.text(80, 150, 'loading...', {font: '30px Courier', fill: '#ffffff'} );
         
         
         /**
@@ -20,6 +20,7 @@ var loaderState = {
             
         // Backgrounds
         game.load.image('snow', '/assets/images/snow.png');
+        game.load.image('transition', '/assets/images/transition.png');
         
         // Platforms
         game.load.image('platform', '/assets/images/platform.png');
@@ -47,15 +48,36 @@ var loaderState = {
         
         //Music
         game.load.audio('gameMusic','assets/sound/game-music.mp3');
-        game.load.audio('introMusic','assets/sound/intro-music.mp3');
+        game.load.audio('introMusic','assets/sound/intro-music.wav');
         game.load.audio('victoryMusic','assets/sound/victory-music.mp3');
         
         this.preloadBar = this.add.sprite(200, 200, 'loadingBar');
         this.load.setPreloadSprite(this.preloadBar);
         
+       
+        
     },
+    
+    transition: function(){
+        
+        var transition = game.add.image(0,0, 'transition');
+        transition.alpha = 0;
+        // to(properties, duration, ease, autoStart, delay, repeat, yoyo)
+        game.add.tween(transition).to( { alpha: 1 }, 5000, Phaser.Easing.Linear.None, true, 0, 0, true);
+    },
+    
     create: function () {
-        //call next state - change game to MainMenu when development complete
-        game.state.start('menu');
+        // Create a tween, and fade it in, try to get the duration the same as yah
+        setTimeout(this.transition, 2000)
+        
+        //game.state.start('menu');
+    },
+    update: function(){
+        if (this.cache.isSoundDecoded('introMusic') )
+		{
+			// now you can safely change state and music will play instantly on desktop (mobile still requires a touch unlock though 
+			// (Need to look this up later))
+			game.state.start('menu');
+		}
     }
 };
