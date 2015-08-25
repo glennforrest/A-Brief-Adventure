@@ -20,10 +20,53 @@ var gameState = {
         
         // Game art
         var background = game.add.tileSprite(0, 0, 1600, 600, 'snow'); 
+        var foreground = game.add.tileSprite(0, 300,1600, 300, 'backgroundClouds');
+        this.briefcase = game.add.image(game.world.width + 450, 300, 'briefcase');
+        this.musicIcon = game.add.image(700, 20, 'musicIcon');
+        this.SFXIcon = game.add.image(750, 20, 'SFXIcon');
+        // Enables all kind of input actions on this image (click, etc)
+        this.musicIcon.alpha = 0.5;
+        this.SFXIcon.alpha = 0.5;
+        this.musicIcon.inputEnabled = true;
+        this.musicIcon.fixedToCamera = true;
+        this.SFXIcon.inputEnabled = true;
+        this.SFXIcon.fixedToCamera = true;
+        // Adding the hover transparency
+        this.musicIcon.events.onInputOver.add(this.hoverOver, this);
+        this.musicIcon.events.onInputOut.add(this.onBlur, this);
+        
+        // Adding the event listener and calling toggleMusic method
+        this.musicIcon.events.onInputDown.add(this.toggleMusic, this);
+        
+        
+        /**
+         * Setting up platforms and ground
+         */
+        
+        //  The platforms group contains the ground platforms
+        this.platforms = game.add.group();
+    
+        //  We will enable physics for any object that is created in this group
+        this.platforms.enableBody = true;
+    
+        // Here we create the ground.
+        this.ground = this.platforms.create(0, game.world.height - 32, 'platform');
+    
+        //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
+        this.ground.scale.setTo(game.world.width, 1);
+    
+        //  This stops it from falling away when you jump on it
+        this.ground.body.immovable = true;
+    
+        //  Now let's create two ledges
+        this.ledge = this.platforms.create(400, 400, 'platform');
+        this.ledge.body.immovable = true;
+    
+        this.ledge = this.platforms.create(150, 250, 'platform');
+        this.ledge.body.immovable = true;
+ 
         // Setting the bounds of the world
         game.world.setBounds(0, 0, 1600, 600);
-        
-        
         
         // Player & Enemies
         this.setupPlayer();
@@ -62,21 +105,28 @@ var gameState = {
             this.music.play();
         }
         
-        //  Reset the players velocity (movement)
+        /**
+         * Collisions and overlaps
+         */ 
+        
+        
+        // Collisions
+        
+        game.physics.arcade.collide(this.player, this.platforms);
+        
+        // Reset the players velocity (movement)
         this.player.body.velocity.x = 0;
     
         if (this.cursors.left.isDown)
         {
             //  Move to the left
             this.player.body.velocity.x = -150;
-    
             this.player.animations.play('left');
         }
         else if (this.cursors.right.isDown)
         {
             //  Move to the right
             this.player.body.velocity.x = 150;
-    
             this.player.animations.play('right');
         }
         else
@@ -95,6 +145,20 @@ var gameState = {
             this.player.body.velocity.y = -350;
            // Add in the SFX sound for jumping
         }
+    }, 
+    toggleMusic: function() {
+        this.musicIcon.alpha = 1;
+        if(this.music.volume == 1){
+            this.music.volume = 0;
+        }else{
+            this.music.volume = 1;
+        }
+    },
+    hoverOver: function(){
+        this.musicIcon.alpha = 0.8;
+    },
+    onBlur: function(){
+        this.musicIcon.alpha = 0.5;
     }
     
     
