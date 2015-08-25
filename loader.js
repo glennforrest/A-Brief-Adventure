@@ -4,6 +4,7 @@ var loaderState = {
     preload: function () {
         
         game.add.sprite(0, 0, 'space');
+        game.add.sprite(200, 200, 'loadingBarContainer');
         // Adding a loading text onto the screen
         var loadingLabel = game.add.text(80, 150, 'loading...', 
                                         {font: '30px Courier', fill: '#ffffff'});
@@ -51,9 +52,7 @@ var loaderState = {
         
         this.preloadBar = this.add.sprite(200, 200, 'loadingBar');
         this.load.setPreloadSprite(this.preloadBar);
-        for(var i=0;i<100;i++){
-            console.log(this.preloadBar.rect);
-        }
+        
     },
     create: function () {
         //call next state - change game to MainMenu when development complete
