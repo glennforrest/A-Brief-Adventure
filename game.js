@@ -76,7 +76,7 @@ var gameState = {
         
         // Sounds
         this.SFXJump = game.add.audio('jump');
-        this.SFXFootstep = game.add.audio('footstep');
+        this.SFXFootstep = game.add.audio('step');
         this.SFXLavaDrip = game.add.audio('lavaDrip');
         this.SFXLavaSplash = game.add.audio('lavaSplash');
         this.SFXLavaSizzle = game.add.audio('lavaSizzle');
@@ -105,6 +105,16 @@ var gameState = {
         this.player.animations.add('left', [0, 1, 2, 3], 10, true);
         this.player.animations.add('right', [5, 6, 7, 8], 10, true);
     },
+    killPlayer: function(player, zombie) {
+    
+        // Removes the player from the screen
+        player.kill();
+        // Play the death sound
+        this.SFXDeath.play();
+        this.setupPlayer();
+    
+
+    },
     update: function(){
         // Checks whether the music has stopped playing, if so starts it again.
          if(!this.music.isPlaying){
@@ -128,12 +138,22 @@ var gameState = {
             //  Move to the left
             this.player.body.velocity.x = -150;
             this.player.animations.play('left');
+            if(this.player.body.touching.down){
+                // Need to find a way to make sure that if the Footstep
+                // is playing, that 
+                 this.SFXFootstep.play('', 0, 0.4, false, false);
+            }
         }
         else if (this.cursors.right.isDown)
         {
             //  Move to the right
             this.player.body.velocity.x = 150;
             this.player.animations.play('right');
+            if(this.player.body.touching.down){
+                // Need to find a way to make sure that if the Footstep
+                // is playing, that 
+                 this.SFXFootstep.play('', 0, 0.4, false, false);
+            }
         }
         else
         {
@@ -143,13 +163,11 @@ var gameState = {
         }
         
         //  Allow the player to jump if they are touching the ground.
-        // TODO Look into getting the jumping working, I think that the touching.down flag isn't being set,
-        // Because it's checking against the collision with something other than the WORLD
-        // So once I've created the ground platforms this might re-correct itself.
         if (this.cursors.up.isDown && this.player.body.touching.down)
         {
             this.player.body.velocity.y = -350;
            // Add in the SFX sound for jumping
+           this.SFXJump.play('', 0, 0.3);
         }
     }, 
     toggleMusic: function() {
