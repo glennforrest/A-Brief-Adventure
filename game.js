@@ -56,8 +56,7 @@ var gameState = {
         this.setupPlayer();
         this.setupEnemies();
         
-        // Setting up the camera to focus on the player
-        game.camera.follow(this.player);
+        
         
         // Sounds
         this.SFXJump = game.add.audio('jump');
@@ -199,6 +198,12 @@ var gameState = {
         // Collisions
         
         game.physics.arcade.collide(this.player, this.platforms);
+        game.physics.arcade.collide(this.enemies, this.platforms);
+        
+        
+        // Overlaps
+        
+        game.physics.arcade.overlap(this.player, this.enemies, this.killPlayer, null, this);
         
         // Reset the players velocity (movement)
         this.player.body.velocity.x = 0;
@@ -248,7 +253,8 @@ var gameState = {
          
         
         
-        
+        // Setting up the camera to focus on the player
+        game.camera.follow(this.player);
     }, 
     toggleMusic: function() {
         this.musicIcon.alpha = 1;
