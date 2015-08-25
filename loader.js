@@ -38,19 +38,22 @@ var loaderState = {
         
         // SFX
         game.load.audio('step','assets/sound/footstep.wav');
-        game.load.audio('step','assets/sound/jump.wav');
-        game.load.audio('step','assets/sound/lava-drip.wav');
-        game.load.audio('step','assets/sound/lava-splash.mp3');
-        game.load.audio('step','assets/sound/sizzle.wav');
-        game.load.audio('step','assets/sound/thud.wav');
+        game.load.audio('jump','assets/sound/jump.wav');
+        game.load.audio('lavaDrip','assets/sound/lava-drip.wav');
+        game.load.audio('lavaSplash','assets/sound/lava-splash.mp3');
+        game.load.audio('lavaSizzle','assets/sound/sizzle.wav');
+        game.load.audio('hitEnemy','assets/sound/thud.wav');
         
         //Music
-        game.load.audio('step','assets/sound/game-music.mp3');
-        game.load.audio('step','assets/sound/intro-music.mp3');
-        game.load.audio('step','assets/sound/victort-music.mp3');
+        game.load.audio('gameMusic','assets/sound/game-music.mp3');
+        game.load.audio('introMusic','assets/sound/intro-music.mp3');
+        game.load.audio('victoryMusic','assets/sound/victory-music.mp3');
         
-        
-        
+        this.preloadBar = this.add.sprite(200, 200, 'loadingBar');
+        this.load.setPreloadSprite(this.preloadBar);
+        for(var i=0;i<100;i++){
+            console.log(this.preloadBar.rect);
+        }
     },
     create: function () {
         //call next state - change game to MainMenu when development complete
