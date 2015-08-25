@@ -4,7 +4,7 @@
 var bootState = {
     preload: function () {
         // load preloader assets e.g. for loading screen / splashscreen
-        
+        game.load.image('space', '/assets/images/space.png');
         // Load the stars background
         // Load the sprite for the loading bar
     },
