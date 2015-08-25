@@ -1,6 +1,6 @@
 body{
-    background-color:black;
+    background-image:url("/assets/images/pattern.svg");
 }
-#canvas{
+canvas{
     margin:auto;
 }
