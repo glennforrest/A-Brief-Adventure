@@ -174,10 +174,10 @@ var gameState = {
         this.player.animations.add('left', [0, 1, 2, 3], 10, true);
         this.player.animations.add('right', [5, 6, 7, 8], 10, true);
     },
-    killPlayer: function(player, zombie) {
+    killPlayer: function() {
     
         // Removes the player from the screen
-        player.kill();
+        this.player.kill();
         // Play the death sound
         this.SFXDeath.play();
         this.setupPlayer();
