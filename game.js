@@ -75,7 +75,13 @@ var gameState = {
         game.camera.follow(this.player);
         
         // Sounds
-        
+        this.SFXJump = game.add.audio('jump');
+        this.SFXFootstep = game.add.audio('footstep');
+        this.SFXLavaDrip = game.add.audio('lavaDrip');
+        this.SFXLavaSplash = game.add.audio('lavaSplash');
+        this.SFXLavaSizzle = game.add.audio('lavaSizzle');
+        this.SFXEnemyHit = game.add.audio('thud');
+        this.SFXDeath = game.add.audio('death');
         this.music = game.add.audio('gameMusic');
         
         // Starts the music playing
