@@ -12,8 +12,8 @@ var menuState = {
         game.add.image(750, 20, 'SFXIcon');
 
         // Play intro music
-        var music = game.add.audio('introMusic');
-        music.play();
+        this.music = game.add.audio('introMusic');
+        this.music.play();
         
         // Mapping the Up key
         var wKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
@@ -22,6 +22,9 @@ var menuState = {
         wKey.onDown.addOnce(this.start, this);
     },
     start: function () {
-            game.state.start('game');
+        // Stops the music
+        this.music.stop();
+        // Starts the game state
+        game.state.start('game');
     }
 };
