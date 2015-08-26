@@ -5,7 +5,7 @@ var loaderState = {
     preload: function () {
         
         game.add.sprite(0, 0, 'space');
-        game.add.sprite(200, 200, 'loadingBarContainer');
+        game.add.sprite(80, 200, 'loadingBarContainer');
         // Adding a loading text onto the screen
         game.add.text(80, 150, 'loading...', {font: '30px Courier', fill: '#ffffff'} );
         
