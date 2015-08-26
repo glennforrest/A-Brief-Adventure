@@ -5,7 +5,7 @@ var gameState = {
     create: function(){
         
         // Setting the bounds of the world
-        game.world.setBounds(0, 0, 1600, 600);
+        game.world.setBounds(0, 0, 3200, 600);
         
         // Setting up arrow keys to move player
         this.cursors = game.input.keyboard.createCursorKeys();
@@ -13,9 +13,23 @@ var gameState = {
         // Add in all assets
         
         // Game art
-        var background = game.add.tileSprite(0, 0, 1600, 600, 'snow'); 
-        var foreground = game.add.tileSprite(0, 300,1600, 300, 'backgroundClouds');
+        var background = game.add.tileSprite(0, 0, game.world.width, 600, 'snow'); 
+        var foreground = game.add.tileSprite(0, 300,game.world.width, 300, 'backgroundClouds');
         this.briefcase = game.add.image(game.world.width - 100, 300, 'briefcase');
+        
+        
+        /**
+         * Setting up platforms and ground
+         */
+        
+        //  The platforms group contains the ground platforms
+        this.setupPlatforms();
+        
+        // Player & Enemies
+        this.setupPlayer();
+        this.setupEnemies();
+        
+        
         this.musicIcon = game.add.image(700, 20, 'musicIcon');
         this.SFXIcon = game.add.image(750, 20, 'SFXIcon');
         // Enables all kind of input actions on this image (click, etc)
@@ -37,21 +51,6 @@ var gameState = {
         this.musicIcon.events.onInputDown.add(this.toggleMusic, this);
         // Adding the event listener and calling toggleMusic method
         this.SFXIcon.events.onInputDown.add(this.toggleSFX, this);
-        
-        /**
-         * Setting up platforms and ground
-         */
-        
-        //  The platforms group contains the ground platforms
-        this.setupPlatforms();
-       
- 
-        
-        
-        // Player & Enemies
-        this.setupPlayer();
-        this.setupEnemies();
-        
         // Sounds
         this.mute = false;
         this.SFXJump = game.add.audio('jump');
@@ -80,10 +79,10 @@ var gameState = {
          */
          
         // This is how to instantiate an Enemy
-        // this.enemyGenerator(50, 50, 'right');
-        // this.enemyGenerator(60, 60, 'left');
-        // this.enemyGenerator(100, 100, 'right');
-        // this.enemyGenerator(300, 300, 'left');
+        this.enemyGenerator(50, 50, 'right');
+        this.enemyGenerator(60, 60, 'left');
+        this.enemyGenerator(100, 100, 'right');
+        this.enemyGenerator(300, 300, 'left');
     },
     enemyGenerator: function(x, y, direction){
         this.enemy = this.enemies.create(x,y,'enemy');
@@ -152,6 +151,8 @@ var gameState = {
         // Stage 2
         this.platformGenerator(1200, 0, 'wall', 1, 2.6);
         this.platformGenerator(1600, 200, 'wall' )
+        this.platformGenerator(2000, 200, 'wall', 1, 2.6);
+        this.platformGenerator(2084, 0, 'wall', 1, 0.8);
        
         /**
          * Platforms
@@ -160,13 +161,17 @@ var gameState = {
         
         // Stage 1
         this.platformGenerator(31, 280, 'platform');
-        this.platformGenerator(270, 450, 'platform');
+        this.platformGenerator(265, 450, 'platform');
         this.platformGenerator(270, 100, 'platform', 2);
         this.platformGenerator(540, 300, 'platform', 1.8);
         
         // Stage 2
         this.platformGenerator(800, 385, 'platform', 2.6);
         this.platformGenerator(800, 385, 'platform', 2.6);
+        this.platformGenerator(1200, 250, 'platform', 0.8);
+        this.platformGenerator(1475, 430, 'platform', 0.8);
+        this.platformGenerator(1715, 200, 'platform', 0.4);
+        this.platformGenerator(1864, 200, 'platform', 0.4);
         
         
         
@@ -205,7 +210,7 @@ var gameState = {
     },
     setupPlayer: function(){
         // The player and its settings
-        this.player = game.add.sprite(700, game.world.height - 150, 'player');
+        this.player = game.add.sprite(1200, game.world.height - 150, 'player');
     
         //  We need to enable physics on the player
         game.physics.arcade.enable(this.player);
