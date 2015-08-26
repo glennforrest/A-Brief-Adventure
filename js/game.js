@@ -4,6 +4,9 @@ var gameState = {
     
     create: function(){
         
+        // Setting the bounds of the world
+        game.world.setBounds(0, 0, 1600, 600);
+        
         // Setting up arrow keys to move player
         this.cursors = game.input.keyboard.createCursorKeys();
         
@@ -12,7 +15,7 @@ var gameState = {
         // Game art
         var background = game.add.tileSprite(0, 0, 1600, 600, 'snow'); 
         var foreground = game.add.tileSprite(0, 300,1600, 300, 'backgroundClouds');
-        this.briefcase = game.add.image(game.world.width + 450, 300, 'briefcase');
+        this.briefcase = game.add.image(game.world.width - 100, 300, 'briefcase');
         this.musicIcon = game.add.image(700, 20, 'musicIcon');
         this.SFXIcon = game.add.image(750, 20, 'SFXIcon');
         // Enables all kind of input actions on this image (click, etc)
@@ -43,8 +46,7 @@ var gameState = {
         this.setupPlatforms();
        
  
-        // Setting the bounds of the world
-        game.world.setBounds(0, 0, 1600, 600);
+        
         
         // Player & Enemies
         this.setupPlayer();
@@ -73,16 +75,15 @@ var gameState = {
         //  We will enable physics for any object that is created in this group
         this.enemies.enableBody = true;
         
-        
         /**
          * Creating Individual Enemies
          */
          
         // This is how to instantiate an Enemy
-        this.enemyGenerator(50, 50, 'right');
-        this.enemyGenerator(60, 60, 'left');
-        this.enemyGenerator(100, 100, 'right');
-        this.enemyGenerator(300, 300, 'left');
+        // this.enemyGenerator(50, 50, 'right');
+        // this.enemyGenerator(60, 60, 'left');
+        // this.enemyGenerator(100, 100, 'right');
+        // this.enemyGenerator(300, 300, 'left');
     },
     enemyGenerator: function(x, y, direction){
         this.enemy = this.enemies.create(x,y,'enemy');
@@ -123,16 +124,12 @@ var gameState = {
         this.walls.enableBody = true;
         this.cloudPlatforms.enableBody = true;
         
-        
-        
-        
-        
         /**
          * Ground
          */
         
         // Here we create the ground.
-        this.ground = this.platforms.create(1, game.world.height - 32, 'platform');
+        this.ground = this.platforms.create(1, game.world.height - 30, 'platform');
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
         this.ground.scale.setTo(game.world.width, 1);
         //  This stops it from falling away when you jump on it
@@ -141,44 +138,74 @@ var gameState = {
         
         /**
          * Walls
-         */ 
+         * All listed from Left to Right, Bottom to Top
+         */
+         
+        // Creating the walls on either end of the world
+        this.platformGenerator(0, 0, 'wall');
+        this.platformGenerator(game.world.width - 31, 0, 'wall');
         
-        this.wallGenerator(1,0);
-        this.wallGenerator(game.world.width, game.world.height);
-        this.wallGenerator(400,300);
-        this.wallGenerator(200,50);
+        // Stage 1
+        this.platformGenerator(400, 100, 'wall');
+        this.platformGenerator(800, 0, 'wall', 1, 3);
+        
+        // Stage 2
+        this.platformGenerator(1200, 0, 'wall', 1, 2.6);
+        this.platformGenerator(1600, 200, 'wall' )
        
-        
         /**
          * Platforms
+         * All listed from Left to Right, Bottom to Top
          */
         
-        //  Creating two ledges
-        this.ledge = this.platforms.create(400, 400, 'platform');
-        this.ledge.body.immovable = true;
+        // Stage 1
+        this.platformGenerator(31, 280, 'platform');
+        this.platformGenerator(270, 450, 'platform');
+        this.platformGenerator(270, 100, 'platform', 2);
+        this.platformGenerator(540, 300, 'platform', 1.8);
         
-        this.ledge = this.platforms.create(150, 250, 'platform');
-        this.ledge.body.immovable = true;  
+        // Stage 2
+        this.platformGenerator(800, 385, 'platform', 2.6);
+        this.platformGenerator(800, 385, 'platform', 2.6);
+        
+        
         
         /**
          * Cloud Platforms
          */
         
-        // Here we create the ground.
-        this.cloud = this.cloudPlatforms.create(600, 400, 'cloud');
+       
+        
         
     },
-    wallGenerator: function(x, y){
+    platformGenerator: function(x, y, type, scaleX, scaleY){
+        scaleX = scaleX || 1;
+        scaleY = scaleY || 1;
         
-        // Create the wall object/sprite
-        this.wall = this.walls.create(x, y, 'wall');
-        this.wall.scale.setTo(1, game.world.height / 170 );
-        this.wall.body.immovable = true;
+        if(type == 'platform'){
+            // Create the platform object/sprite
+            this.ledge = this.platforms.create(x, y, 'platform');
+            this.ledge.scale.setTo(scaleX, scaleY);
+            this.ledge.body.immovable = true;
+        }else if (type == 'wall'){
+            
+            // Default wall to reach the ground
+            if (scaleY == 1 ){
+                scaleY = game.world.height / 160;
+            }
+            // Create the wall object/sprite
+            this.wall = this.walls.create(x, y, 'wall');
+            this.wall.scale.setTo(scaleX, scaleY);
+            this.wall.body.immovable = true;
+        }else if (type == 'cloud'){
+            this.cloud = this.cloudPlatforms.create(x, y, 'cloud');
+            // Perhaps in here I'll be adding in the functionality to make the sprites move along a set path
+        }
         
     },
     setupPlayer: function(){
         // The player and its settings
-        this.player = game.add.sprite(32, game.world.height - 150, 'player');
+        this.player = game.add.sprite(700, game.world.height - 150, 'player');
     
         //  We need to enable physics on the player
         game.physics.arcade.enable(this.player);
@@ -212,7 +239,7 @@ var gameState = {
             this.music.play();
         }
         
-        
+        this.width = game.world.width;
         
         
         /**
@@ -224,6 +251,7 @@ var gameState = {
         
         game.physics.arcade.collide(this.player, this.platforms);
         game.physics.arcade.collide(this.player, this.walls);
+        game.physics.arcade.collide(this.platforms, this.walls);
         game.physics.arcade.collide(this.enemies, this.platforms);
         game.physics.arcade.collide(this.enemies, this.walls);
         
