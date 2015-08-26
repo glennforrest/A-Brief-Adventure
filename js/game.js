@@ -84,13 +84,13 @@ var gameState = {
         // Stage 2
         this.generateLava(850, 418, 'drip', 0.1, 0.6);
         this.generateLava(1015, 418, 'drip', 0.1, 0.6, 400);
-        this.generateLava(1170, 418, 'drip', 0.1, 0.6, 1300);
+        this.generateLava(1170, 418, 'drip', 0.1, 0.6, 800);
         
     },
-    generateLava: function(x, y, type, scaleX, scaleY, gravity){
+    generateLava: function(x, y, type, scaleX, scaleY, velocity){
         scaleX = scaleX || 1;
         scaleY = scaleY || 1;
-        gravity = gravity || 300;
+        velocity = velocity || 300;
         if(type == 'pool'){
             this.lava = this.lavas.create(x, y, 'lava');
             this.lava.scale.setTo(scaleX, scaleY);
@@ -99,7 +99,7 @@ var gameState = {
             this.lavaDrip = this.dripLavas.create(x, y, 'lava');
             this.lavaDrip.scale.setTo(scaleX, scaleY);
             //this.lavaDrip.body.immovable = true;
-            this.lavaDrip.body.gravity.y = gravity;
+            this.lavaDrip.body.velocity.y = velocity;
             this.lavaDrip.body.bounce.set(0, 1);
             this.lavaDrip.body.collideWorldBounds = true;
             
