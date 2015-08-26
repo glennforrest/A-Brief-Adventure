@@ -15,6 +15,7 @@ var gameState = {
         // Game art
         game.add.tileSprite(0, 0, game.world.width, 600, 'snow'); 
         game.add.tileSprite(0, 300,game.world.width, 300, 'backgroundClouds');
+        this.deathCounter = 0;
         this.briefcase = game.add.sprite(game.world.width - 100, 522, 'briefcase');
         //  We need to enable physics on the player
         game.physics.arcade.enable(this.briefcase);
@@ -349,6 +350,8 @@ var gameState = {
     },
     killPlayer: function() {
     
+        this.deathCounter++;
+        console.log(this.deathCounter);
         // Removes the player from the screen
         this.player.kill();
         // Play the death sound
