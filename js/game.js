@@ -15,7 +15,9 @@ var gameState = {
         // Game art
         game.add.tileSprite(0, 0, game.world.width, 600, 'snow'); 
         game.add.tileSprite(0, 300,game.world.width, 300, 'backgroundClouds');
-        this.briefcase = game.add.image(game.world.width - 100, 300, 'briefcase');
+        this.briefcase = game.add.image(game.world.width - 100, 522, 'briefcase');
+        this.briefcase.scale.setTo(0.3, 0.3);
+        
         
         //  Platform/Wall/Ground/Clouds
         this.setupPlatforms();
@@ -92,6 +94,15 @@ var gameState = {
         // Stage 3
         this.generateLava(2372, 240, 'drip', 0.1, 0.6, 0, 200);
         
+        // Stage 4
+        this.generateLava(3536, 380, 'drip', 0.1, 0.6, 0, 200);
+        this.generateLava(3747, 380, 'drip', 0.1, 0.6, 0, 200);
+        this.generateLava(3837, 380, 'drip', 0.1, 0.6, 0, 200);
+        this.generateLava(4067, 380, 'drip', 0.1, 0.6, 0, 200);
+        this.generateLava(4162, 380, 'drip', 0.1, 0.6, 0, 200);
+        this.generateLava(4257, 380, 'drip', 0.1, 0.6, 0, 200);
+        this.generateLava(4465, 380, 'drip', 0.1, 0.6, 0, 200);
+        
     },
     generateLava: function(x, y, type, scaleX, scaleY, velocityX, velocityY){
         scaleX = scaleX || 1;
@@ -135,6 +146,13 @@ var gameState = {
         
         // Stage 3
         this.enemyGenerator(2650, 160, 'right');
+        
+        // Stage 4
+        this.enemyGenerator(3600, 522, 'right');
+        this.enemyGenerator(3900, 522, 'right');
+        this.enemyGenerator(4080, 522, 'left');
+        this.enemyGenerator(4100, 522, 'left');
+        this.enemyGenerator(4450, 522, 'left');
     },
     enemyGenerator: function(x, y, direction){
         this.enemy = this.enemies.create(x,y,'enemy');
@@ -212,6 +230,15 @@ var gameState = {
         this.platformGenerator(2744, 184, 'wall', 0.5, 0.1);
         this.platformGenerator(3200, 200, 'wall', 1, 2.6);
         
+        // Stage 4
+        this.platformGenerator(3536, 0, 'wall', 1, 2.32);
+        this.platformGenerator(3536, 550, 'wall', 1, 1);
+        this.platformGenerator(3747, 550, 'wall', 1, 1);
+        this.platformGenerator(3837, 550, 'wall', 1, 1);
+        this.platformGenerator(4067, 550, 'wall', 1, 1);
+        this.platformGenerator(4257, 550, 'wall', 1, 1);
+        this.platformGenerator(4465, 550, 'wall', 1, 1);
+        this.platformGenerator(4465, 0, 'wall', 1, 2.32);
                
         /**
          * Platforms
@@ -235,6 +262,9 @@ var gameState = {
         // Stage 3
         this.platformGenerator(2345, 430, 'platform', 0.3);
         this.platformGenerator(2600, 200, 'platform', 1);
+        
+        // Stage 4
+        this.platformGenerator(3536, 370, 'platform', 6);
         
         
         /**
@@ -301,7 +331,7 @@ var gameState = {
     setupPlayer: function(){
         // The player and its settings
         // game.world.height - 150
-        this.player = game.add.sprite(2365, 100 , 'player');
+        this.player = game.add.sprite(4792, 522 , 'player');
     
         //  We need to enable physics on the player
         game.physics.arcade.enable(this.player);
@@ -370,13 +400,15 @@ var gameState = {
         
         // Overlaps
         
-        game.physics.arcade.overlap(this.player, this.enemies, this.killPlayer, null, this);
+       // game.physics.arcade.overlap(this.player, this.enemies, this.killPlayer, null, this);
        // game.physics.arcade.overlap(this.player, this.lavas, this.lavaPoolKillPlayer, null, this);
         //game.physics.arcade.overlap(this.player, this.dripLavas, this.lavaDripKillPlayer, null, this);
+        game.physics.arcade.overlap(this.player, this.briefcase, this.win, null, this);
         game.physics.arcade.overlap(this.cloudPlatforms, this.lavas, this.killCloud, null, this);
         
         game.physics.arcade.overlap(this.cloudPlatforms, this.walls, this.cloudChangeDirection, null, this);
         game.physics.arcade.overlap(this.cloudPlatforms, this.platforms, this.cloudChangeDirection, null, this);
+        
         
         
         // Reset the players velocity (movement)
@@ -478,6 +510,12 @@ var gameState = {
             this.mute = false;
             this.SFXIcon.tint = 0xffffff;
         }
+    },
+    win: function(){
+        // Stops the music
+        this.music.stop();
+        // Starts the game state
+        game.state.start('winGame');
     }
     
 };
