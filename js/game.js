@@ -225,6 +225,7 @@ var gameState = {
         this.platformGenerator(1864, 200, 'platform', 0.4);
         
         // Stage 3
+        this.platformGenerator(2345, 430, 'platform', 0.5);
         this.platformGenerator(2600, 200, 'platform', 1);
         
         
@@ -233,7 +234,9 @@ var gameState = {
          */
         
         // Stage 3
-        this.platformGenerator(2100, 0, 'cloud', 1, 1, 0, -200)
+        this.platformGenerator(2130, 0, 'cloud', 1, 1, 0, 200);
+        this.platformGenerator(2470, 415, 'cloud', 0.5, 0.5, 0, -200);
+        this.platformGenerator(2880, 210, 'cloud', 0.5, 0.5, 100, 0);
     },
     platformGenerator: function(x, y, type, scaleX, scaleY, velocityX, velocityY){
         scaleX = scaleX || 1;
@@ -254,17 +257,21 @@ var gameState = {
             }
             // Create the wall object/sprite
             this.wall = this.walls.create(x, y, 'wall');
+            game.physics.arcade.enable(this.wall);
             this.wall.scale.setTo(scaleX, scaleY);
             this.wall.body.immovable = true;
         }else if (type == 'cloud'){
             this.cloud = this.cloudPlatforms.create(x, y, 'cloud');
+            game.physics.arcade.enable(this.cloud);
             this.cloud.body.velocity.x = velocityX;
             this.cloud.body.velocity.y = velocityY;
+            this.cloud.scale.setTo(scaleX, scaleY);
             this.cloud.body.bounce.set(1, 1);
             this.cloud.body.collideWorldBounds = true;
-            this.cloud.originalPosition = {x: x, 'y': y };
+            this.cloud.body.immovable = true;
+            this.cloud.originalPosition = {'x': x, 'y': y };
             this.cloud.originalVelocity = {'velocityX': velocityX, 'velocityY': velocityY};
-            // Perhaps in here I'll be adding in the functionality to make the sprites move along a set path
+            this.cloud.originalScale = {'scaleX': scaleX, 'scaleY': scaleY};
         }
     },
     killCloud: function(cloud, lava){
@@ -277,12 +284,18 @@ var gameState = {
         // Destroys the cloud
         cloud.kill();
         // Create a new cloud object with same positions and velocity as previous
-        this.platformGenerator(cloud.originalPosition.x, cloud.originalPosition.y, 'cloud', 1, 1, cloud.originalVelocity.velocityX, cloud.originalVelocity.velocityY);
+        this.platformGenerator(cloud.originalPosition.x, cloud.originalPosition.y, 'cloud', cloud.originalScale.scaleX, cloud.originalScale.scaleY, cloud.originalVelocity.velocityX, cloud.originalVelocity.velocityY);
+    },
+    cloudChangeDirection: function(cloud, object){
+        var velocity = cloud.body.velocity.x;
+        console.log(velocity);
+        // Converting Positive to Negative and vice versa
+        cloud.body.velocity.x *= -1;
     },
     setupPlayer: function(){
         // The player and its settings
         // game.world.height - 150
-        this.player = game.add.sprite(2000, 100 , 'player');
+        this.player = game.add.sprite(2927, 100 , 'player');
     
         //  We need to enable physics on the player
         game.physics.arcade.enable(this.player);
@@ -342,6 +355,7 @@ var gameState = {
         
         game.physics.arcade.collide(this.player, this.platforms);
         game.physics.arcade.collide(this.player, this.walls);
+        game.physics.arcade.collide(this.player, this.cloudPlatforms);
         game.physics.arcade.collide(this.platforms, this.walls);
         game.physics.arcade.collide(this.enemies, this.platforms);
         game.physics.arcade.collide(this.enemies, this.walls);
@@ -353,7 +367,10 @@ var gameState = {
         game.physics.arcade.overlap(this.player, this.enemies, this.killPlayer, null, this);
        // game.physics.arcade.overlap(this.player, this.lavas, this.lavaPoolKillPlayer, null, this);
         game.physics.arcade.overlap(this.player, this.dripLavas, this.lavaDripKillPlayer, null, this);
-        game.physics.arcade.overlap(this.cloud, this.lavas, this.killCloud, null, this);
+        game.physics.arcade.overlap(this.cloudPlatforms, this.lavas, this.killCloud, null, this);
+        
+        game.physics.arcade.overlap(this.cloudPlatforms, this.walls, this.cloudChangeDirection, null, this);
+        game.physics.arcade.overlap(this.cloudPlatforms, this.platforms, this.cloudChangeDirection, null, this);
         
         
         // Reset the players velocity (movement)
