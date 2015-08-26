@@ -49,7 +49,6 @@ var loaderState = {
         game.load.audio('lavaDrip','assets/sound/lava-drip.wav');
         game.load.audio('lavaSplash','assets/sound/lava-splash.mp3');
         game.load.audio('lavaSizzle','assets/sound/sizzle.wav');
-        game.load.audio('hitEnemy','assets/sound/thud.wav');
         
         //Music
         

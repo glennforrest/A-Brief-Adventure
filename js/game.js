@@ -56,7 +56,6 @@ var gameState = {
         this.SFXLavaDrip = game.add.audio('lavaDrip');
         this.SFXLavaSplash = game.add.audio('lavaSplash');
         this.SFXLavaSizzle = game.add.audio('lavaSizzle');
-        this.SFXEnemyHit = game.add.audio('thud');
         this.SFXDeath = game.add.audio('death');
         this.music = game.add.audio('gameMusic');
         
