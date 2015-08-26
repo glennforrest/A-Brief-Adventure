@@ -107,7 +107,6 @@ var gameState = {
         this.generateLava(4162, 380, 'drip', 0.1, 0.6, 0, 200);
         this.generateLava(4257, 380, 'drip', 0.1, 0.6, 0, 200);
         this.generateLava(4465, 380, 'drip', 0.1, 0.6, 0, 200);
-        
     },
     generateLava: function(x, y, type, scaleX, scaleY, velocityX, velocityY){
         scaleX = scaleX || 1;
@@ -125,10 +124,7 @@ var gameState = {
             this.lavaDrip.body.velocity.y = velocityY;
             this.lavaDrip.body.bounce.set(1, 1);
             this.lavaDrip.body.collideWorldBounds = true;
-            
-            
         }
-        
     },
     setupEnemies: function(){
         
@@ -141,12 +137,14 @@ var gameState = {
         /**
          * Creating Individual Enemies
          */
-         
-        // This is how to instantiate an Enemy
-        this.enemyGenerator(50, 50, 'right');
-        this.enemyGenerator(60, 60, 'left');
-        this.enemyGenerator(100, 100, 'right');
-        this.enemyGenerator(300, 300, 'left');
+        
+        // Stage 1 
+        this.enemyGenerator(240, 522, 'right');
+        this.enemyGenerator(38, 232, 'right');
+        this.enemyGenerator(550, 50, 'left');
+        this.enemyGenerator(750, 200, 'right');
+        this.enemyGenerator(440, 522, 'right');
+        this.enemyGenerator(1254, 522, 'left');
         
         
         // Stage 3
@@ -225,7 +223,7 @@ var gameState = {
         
         // Stage 2
         this.platformGenerator(1200, 0, 'wall', 1, 2.6);
-        this.platformGenerator(1600, 200, 'wall' )
+        this.platformGenerator(1600, 200, 'wall' );
         this.platformGenerator(2000, 200, 'wall', 1, 2.6);
         this.platformGenerator(2084, 0, 'wall', 1, 0.8);
         
@@ -270,7 +268,6 @@ var gameState = {
         
         // Stage 4
         this.platformGenerator(3536, 370, 'platform', 6);
-        
         
         /**
          * Cloud Platforms
@@ -335,8 +332,7 @@ var gameState = {
     },
     setupPlayer: function(){
         // The player and its settings
-        // game.world.height - 150
-        this.player = game.add.sprite(4792, 522 , 'player');
+        this.player = game.add.sprite(32, game.world.height - 150 , 'player');
     
         //  We need to enable physics on the player
         game.physics.arcade.enable(this.player);
@@ -377,20 +373,22 @@ var gameState = {
         this.killPlayer();
     },
     update: function(){
+        
+        /**
+         * Music methods
+         */ 
+        
         // Checks whether the music has stopped playing, if so starts it again.
          if(!this.music.isPlaying){
             this.music.play();
         }
         
-        this.width = game.world.width;
+        // Plays SFXDrip for each object/sprite
+        this.dripLavas.forEach(this.drip, this);
         
-        //this.dripLavas.forEach(this.drippy, this);   
-              
-       // setTimeout(drip, 15000);
         /**
          * Collisions and overlaps
          */ 
-        
         
         // Collisions
         
@@ -405,43 +403,41 @@ var gameState = {
         
         // Overlaps
         
-       // game.physics.arcade.overlap(this.player, this.enemies, this.killPlayer, null, this);
-       // game.physics.arcade.overlap(this.player, this.lavas, this.lavaPoolKillPlayer, null, this);
-        //game.physics.arcade.overlap(this.player, this.dripLavas, this.lavaDripKillPlayer, null, this);
+        game.physics.arcade.overlap(this.player, this.enemies, this.killPlayer, null, this);
+        game.physics.arcade.overlap(this.player, this.lavas, this.lavaPoolKillPlayer, null, this);
+        game.physics.arcade.overlap(this.player, this.dripLavas, this.lavaDripKillPlayer, null, this);
         game.physics.arcade.overlap(this.player, this.briefcase, this.win, null, this);
         game.physics.arcade.overlap(this.cloudPlatforms, this.lavas, this.killCloud, null, this);
-        
         game.physics.arcade.overlap(this.cloudPlatforms, this.walls, this.cloudChangeDirection, null, this);
         game.physics.arcade.overlap(this.cloudPlatforms, this.platforms, this.cloudChangeDirection, null, this);
         
-        
-        
+        /**
+         * Player Movement
+         */
+         
         // Reset the players velocity (movement)
         this.player.body.velocity.x = 0;
     
-        if (this.cursors.left.isDown)
-        {
+        if (this.cursors.left.isDown){
             //  Move to the left
             this.player.body.velocity.x = -150;
             this.player.animations.play('left');
             if(this.player.body.touching.down){
-                // Need to find a way to make sure that if the Footstep
-                // is playing, that 
+                // If SFX is not muted
                 if(this.mute == false){
-                 this.SFXFootstep.play('', 0, 0.4, false, false);   
+                    // Loop over the SFXFootstep
+                    this.SFXFootstep.play('', 0, 0.4, false, false);   
                 }
-                 
             }
         }
-        else if (this.cursors.right.isDown)
-        {
+        else if (this.cursors.right.isDown){
             //  Move to the right
             this.player.body.velocity.x = 150;
             this.player.animations.play('right');
             if(this.player.body.touching.down){
-                // Need to find a way to make sure that if the Footstep
-                // is playing, that 
+                // If SFX is not muted
                 if(this.mute == false){
+                    // Loop over the SFXFootstep
                     this.SFXFootstep.play('', 0, 0.4, false, false);   
                 }
             }
@@ -451,29 +447,27 @@ var gameState = {
             this.player.animations.stop();
             this.player.frame = 4;
         }
-        
         //  Allow the player to jump if they are touching the ground.
         if (this.cursors.up.isDown && this.player.body.touching.down){
             this.player.body.velocity.y = -350;
-            // Add in the SFX sound for jumping
+            // SFX sound for jumping
             if(this.mute == false){
                 this.SFXJump.play('', 0, 0.3);
             }
         }
         
-        // Plays SFXDrip for each object/sprite
-        this.dripLavas.forEach(this.drip, this);
-        
         /**
-         * Enemy update functions
+         * Enemy animations
          */
         this.enemies.forEach(this.enemyAnimations, this);
          
-        
+        /**
+         * Camera
+         */
+         
         // Setting up the camera to focus on the player
         game.camera.follow(this.player);
     },
-    
     drip: function(lavaDrip){
         // Play the SFX of the drip here?
         if(lavaDrip.inCamera){
