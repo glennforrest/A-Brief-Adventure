@@ -82,15 +82,18 @@ var gameState = {
          */ 
         
         // Stage 2
-        this.generateLava(850, 418, 'drip', 0.1, 0.6);
-        this.generateLava(1015, 418, 'drip', 0.1, 0.6, 400);
-        this.generateLava(1170, 418, 'drip', 0.1, 0.6, 800);
+        this.generateLava(850, 418, 'drip', 0.1, 0.6, 0, 300);
+        this.generateLava(1015, 418, 'drip', 0.1, 0.6, 0, 300);
+        this.generateLava(1170, 418, 'drip', 0.1, 0.6, 0, 200);
+        this.generateLava(1870, 80, 'drip', 0.1, 0.6, 500, 0);
+        this.generateLava(1670, 22, 'drip', 0.1, 0.6, 500, 0);
         
     },
-    generateLava: function(x, y, type, scaleX, scaleY, velocity){
+    generateLava: function(x, y, type, scaleX, scaleY, velocityX, velocityY){
         scaleX = scaleX || 1;
         scaleY = scaleY || 1;
-        velocity = velocity || 300;
+        velocityX = velocityX || 0;
+        velocityY = velocityY || 0;
         if(type == 'pool'){
             this.lava = this.lavas.create(x, y, 'lava');
             this.lava.scale.setTo(scaleX, scaleY);
@@ -98,9 +101,9 @@ var gameState = {
         }else if (type == 'drip'){
             this.lavaDrip = this.dripLavas.create(x, y, 'lava');
             this.lavaDrip.scale.setTo(scaleX, scaleY);
-            //this.lavaDrip.body.immovable = true;
-            this.lavaDrip.body.velocity.y = velocity;
-            this.lavaDrip.body.bounce.set(0, 1);
+            this.lavaDrip.body.velocity.x = velocityX;
+            this.lavaDrip.body.velocity.y = velocityY;
+            this.lavaDrip.body.bounce.set(1, 1);
             this.lavaDrip.body.collideWorldBounds = true;
             
             
@@ -249,7 +252,7 @@ var gameState = {
     },
     setupPlayer: function(){
         // The player and its settings
-        this.player = game.add.sprite(1063, game.world.height - 150, 'player');
+        this.player = game.add.sprite(1542, game.world.height - 150, 'player');
     
         //  We need to enable physics on the player
         game.physics.arcade.enable(this.player);
@@ -313,6 +316,7 @@ var gameState = {
         game.physics.arcade.collide(this.enemies, this.platforms);
         game.physics.arcade.collide(this.enemies, this.walls);
         game.physics.arcade.collide(this.dripLavas, this.platforms);
+        game.physics.arcade.collide(this.dripLavas, this.walls);
         
         // Overlaps
         
