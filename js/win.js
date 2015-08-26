@@ -16,6 +16,8 @@ var winState = {
         game.add.text(80, 80, 'A Brief Adventure', {font:'50px Arial', fill:'#ffffff'} );
         game.add.text(80, 150, 'You picked up your briefcase and won the game! Great', {font:'25px Arial', fill:'#ffffff'} );
         game.add.text(80, 450, 'Press the "up" key to pick it up again', {font:'25px Arial', fill:'#ffffff'} );
+        game.add.text(80, 520, 'Game art: Summer Thaxton & Hannah Cohan.', {font:'20px Arial', fill:'#ffffff'} );
+        game.add.text(80, 550, 'Music during game: Glenn Forrest.', {font:'20px Arial', fill:'#ffffff'} );
         
         
         var briefcase = game.add.image(80,250,'briefcase');
