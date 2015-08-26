@@ -22,6 +22,7 @@ var loaderState = {
         game.load.image('snow', '/assets/images/snow.png');
         game.load.image('transition', '/assets/images/transition.png');
         game.load.image('backgroundClouds', '/assets/images/whiteclouds.png');
+        game.load.image('lava', '/assets/images/lava.png');
         game.load.audio('gameMusic','assets/sound/game-music.mp3');
         
         // Platforms

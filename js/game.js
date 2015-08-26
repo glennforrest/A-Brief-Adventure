@@ -13,17 +13,15 @@ var gameState = {
         // Add in all assets
         
         // Game art
-        var background = game.add.tileSprite(0, 0, game.world.width, 600, 'snow'); 
-        var foreground = game.add.tileSprite(0, 300,game.world.width, 300, 'backgroundClouds');
+        game.add.tileSprite(0, 0, game.world.width, 600, 'snow'); 
+        game.add.tileSprite(0, 300,game.world.width, 300, 'backgroundClouds');
         this.briefcase = game.add.image(game.world.width - 100, 300, 'briefcase');
         
-        
-        /**
-         * Setting up platforms and ground
-         */
-        
-        //  The platforms group contains the ground platforms
+        //  Platform/Wall/Ground/Clouds
         this.setupPlatforms();
+        
+        // Lava
+        this.setupLava();
         
         // Player & Enemies
         this.setupPlayer();
@@ -64,6 +62,27 @@ var gameState = {
         
         // Starts the music playing
         this.music.play();
+        
+    },
+    setupLava: function(){
+        this.lavas = game.add.group()
+        this.lavas.enableBody = true;
+        
+        this.generateLava(1632, 250, 'pool', 2.3, 10);
+    },
+    generateLava: function(x, y, type, scaleX, scaleY){
+        scaleX = scaleX || 1;
+        scaleY = scaleY || 1;
+        
+        if(type == 'pool'){
+            this.lava = this.lavas.create(x, y, 'lava');
+            this.lava.scale.setTo(scaleX, scaleY);
+            this.lava.body.immovable = true;
+        }else if (type == 'drip'){
+            this.lavaDrip = this.lavas.create(x, y, 'lava');
+            this.lavaDrip.scale.setTo(scaleX, scaleY);
+            this.lavaDrip.body.immovable = true;
+        }
         
     },
     setupEnemies: function(){
@@ -179,8 +198,6 @@ var gameState = {
          * Cloud Platforms
          */
         
-       
-        
         
     },
     platformGenerator: function(x, y, type, scaleX, scaleY){
@@ -210,7 +227,7 @@ var gameState = {
     },
     setupPlayer: function(){
         // The player and its settings
-        this.player = game.add.sprite(1200, game.world.height - 150, 'player');
+        this.player = game.add.sprite(32, game.world.height - 150, 'player');
     
         //  We need to enable physics on the player
         game.physics.arcade.enable(this.player);
@@ -235,8 +252,20 @@ var gameState = {
         }
         
         this.setupPlayer();
-    
-
+    },
+    lavaPoolKillPlayer: function(){
+        // Play the lava splash sound
+        if(this.mute == false){
+            this.SFXLavaSplash.play();
+        }
+        this.killPlayer();
+    },
+    lavaDripKillPlayer: function(){
+        // Play the lava splash sound
+        if(this.mute == false){
+            this.SFXLavaSizzle.play();
+        }
+        this.killPlayer();
     },
     update: function(){
         // Checks whether the music has stopped playing, if so starts it again.
@@ -263,6 +292,8 @@ var gameState = {
         // Overlaps
         
         game.physics.arcade.overlap(this.player, this.enemies, this.killPlayer, null, this);
+        game.physics.arcade.overlap(this.player, this.lava, this.lavaPoolKillPlayer, null, this);
+        game.physics.arcade.overlap(this.player, this.lavaDrip, this.lavaDripKillPlayer, null, this);
         
         // Reset the players velocity (movement)
         this.player.body.velocity.x = 0;
@@ -351,12 +382,6 @@ var gameState = {
             this.mute = false;
             this.SFXIcon.tint = 0xffffff;
         }
-    },
-    hoverOver: function(){
-        this.musicIcon.alpha = 0.8;
-    },
-    onBlur: function(){
-        this.musicIcon.alpha = 0.5;
     }
     
-}
+};
