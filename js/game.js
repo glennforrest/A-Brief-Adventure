@@ -27,7 +27,6 @@ var gameState = {
         this.setupPlayer();
         this.setupEnemies();
         
-        
         this.musicIcon = game.add.image(700, 20, 'musicIcon');
         this.SFXIcon = game.add.image(750, 20, 'SFXIcon');
         // Enables all kind of input actions on this image (click, etc)
@@ -90,6 +89,9 @@ var gameState = {
         this.generateLava(1870, 80, 'drip', 0.1, 0.6, 500, 0);
         this.generateLava(1670, 22, 'drip', 0.1, 0.6, 500, 0);
         
+        // Stage 3
+        this.generateLava(2372, 240, 'drip', 0.1, 0.6, 0, 200);
+        
     },
     generateLava: function(x, y, type, scaleX, scaleY, velocityX, velocityY){
         scaleX = scaleX || 1;
@@ -129,6 +131,10 @@ var gameState = {
         this.enemyGenerator(60, 60, 'left');
         this.enemyGenerator(100, 100, 'right');
         this.enemyGenerator(300, 300, 'left');
+        
+        
+        // Stage 3
+        this.enemyGenerator(2650, 160, 'right');
     },
     enemyGenerator: function(x, y, direction){
         this.enemy = this.enemies.create(x,y,'enemy');
@@ -202,6 +208,8 @@ var gameState = {
         
         // Stage 3
         this.platformGenerator(2365, 0, 'wall', 1, 1.5);
+        this.platformGenerator(2600, 184, 'wall', 0.5, 0.1);
+        this.platformGenerator(2744, 184, 'wall', 0.5, 0.1);
         this.platformGenerator(3200, 200, 'wall', 1, 2.6);
         
                
@@ -225,7 +233,7 @@ var gameState = {
         this.platformGenerator(1864, 200, 'platform', 0.4);
         
         // Stage 3
-        this.platformGenerator(2345, 430, 'platform', 0.5);
+        this.platformGenerator(2345, 430, 'platform', 0.3);
         this.platformGenerator(2600, 200, 'platform', 1);
         
         
@@ -235,7 +243,7 @@ var gameState = {
         
         // Stage 3
         this.platformGenerator(2130, 0, 'cloud', 1, 1, 0, 200);
-        this.platformGenerator(2470, 415, 'cloud', 0.5, 0.5, 0, -200);
+        this.platformGenerator(2470, 445, 'cloud', 0.5, 0.5, 0, -200);
         this.platformGenerator(2880, 210, 'cloud', 0.5, 0.5, 100, 0);
     },
     platformGenerator: function(x, y, type, scaleX, scaleY, velocityX, velocityY){
@@ -287,15 +295,13 @@ var gameState = {
         this.platformGenerator(cloud.originalPosition.x, cloud.originalPosition.y, 'cloud', cloud.originalScale.scaleX, cloud.originalScale.scaleY, cloud.originalVelocity.velocityX, cloud.originalVelocity.velocityY);
     },
     cloudChangeDirection: function(cloud, object){
-        var velocity = cloud.body.velocity.x;
-        console.log(velocity);
         // Converting Positive to Negative and vice versa
         cloud.body.velocity.x *= -1;
     },
     setupPlayer: function(){
         // The player and its settings
         // game.world.height - 150
-        this.player = game.add.sprite(2927, 100 , 'player');
+        this.player = game.add.sprite(2365, 100 , 'player');
     
         //  We need to enable physics on the player
         game.physics.arcade.enable(this.player);
@@ -366,7 +372,7 @@ var gameState = {
         
         game.physics.arcade.overlap(this.player, this.enemies, this.killPlayer, null, this);
        // game.physics.arcade.overlap(this.player, this.lavas, this.lavaPoolKillPlayer, null, this);
-        game.physics.arcade.overlap(this.player, this.dripLavas, this.lavaDripKillPlayer, null, this);
+        //game.physics.arcade.overlap(this.player, this.dripLavas, this.lavaDripKillPlayer, null, this);
         game.physics.arcade.overlap(this.cloudPlatforms, this.lavas, this.killCloud, null, this);
         
         game.physics.arcade.overlap(this.cloudPlatforms, this.walls, this.cloudChangeDirection, null, this);
@@ -424,13 +430,13 @@ var gameState = {
         /**
          * Enemy update functions
          */
-        
         this.enemies.forEach(this.enemyAnimations, this);
          
         
         // Setting up the camera to focus on the player
         game.camera.follow(this.player);
-    }, 
+    },
+    
     drip: function(lavaDrip){
         // Play the SFX of the drip here?
         if(lavaDrip.inCamera){
