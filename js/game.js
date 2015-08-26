@@ -76,7 +76,6 @@ var gameState = {
         // Stage 2 
         this.generateLava(1632, 250, 'pool', 2.3, 10);
     
-        
         /**
          * Lava Drips
          */ 
@@ -252,7 +251,7 @@ var gameState = {
     },
     setupPlayer: function(){
         // The player and its settings
-        this.player = game.add.sprite(1542, game.world.height - 150, 'player');
+        this.player = game.add.sprite(32, game.world.height - 150, 'player');
     
         //  We need to enable physics on the player
         game.physics.arcade.enable(this.player);
@@ -384,10 +383,12 @@ var gameState = {
     }, 
     drip: function(lavaDrip){
         // Play the SFX of the drip here?
-        if(lavaDrip.body.touching.down){
-            if(this.mute == false){
-                this.SFXLavaDrip.play();
-            }
+        if(lavaDrip.inCamera){
+            if(lavaDrip.body.touching.down){
+                if(this.mute == false){
+                    this.SFXLavaDrip.play();
+                }
+            }    
         }
     },
     toggleMusic: function() {
