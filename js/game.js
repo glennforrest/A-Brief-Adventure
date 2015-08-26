@@ -15,7 +15,12 @@ var gameState = {
         // Game art
         game.add.tileSprite(0, 0, game.world.width, 600, 'snow'); 
         game.add.tileSprite(0, 300,game.world.width, 300, 'backgroundClouds');
-        this.briefcase = game.add.image(game.world.width - 100, 522, 'briefcase');
+        this.briefcase = game.add.sprite(game.world.width - 100, 522, 'briefcase');
+        //  We need to enable physics on the player
+        game.physics.arcade.enable(this.briefcase);
+    
+        //  Player physics properties. Give the little guy a slight bounce.
+        this.briefcase.body.collideWorldBounds = true;
         this.briefcase.scale.setTo(0.3, 0.3);
         
         
@@ -515,7 +520,7 @@ var gameState = {
         // Stops the music
         this.music.stop();
         // Starts the game state
-        game.state.start('winGame');
+        game.state.start('win');
     }
     
 };
