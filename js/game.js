@@ -5,7 +5,7 @@ var gameState = {
     create: function(){
         
         // Setting the bounds of the world
-        game.world.setBounds(0, 0, 3200, 600);
+        game.world.setBounds(0, 0, 5000, 600);
         
         // Setting up arrow keys to move player
         this.cursors = game.input.keyboard.createCursorKeys();
@@ -75,7 +75,10 @@ var gameState = {
         
         // Stage 2 
         this.generateLava(1632, 250, 'pool', 2.3, 10);
-    
+        
+        // Stage 3
+        this.generateLava(2031, 506, 'pool', 7.3, 2);
+            
         /**
          * Lava Drips
          */ 
@@ -196,7 +199,12 @@ var gameState = {
         this.platformGenerator(1600, 200, 'wall' )
         this.platformGenerator(2000, 200, 'wall', 1, 2.6);
         this.platformGenerator(2084, 0, 'wall', 1, 0.8);
-       
+        
+        // Stage 3
+        this.platformGenerator(2365, 0, 'wall', 1, 1.5);
+        this.platformGenerator(3200, 200, 'wall', 1, 2.6);
+        
+               
         /**
          * Platforms
          * All listed from Left to Right, Bottom to Top
@@ -216,6 +224,8 @@ var gameState = {
         this.platformGenerator(1715, 200, 'platform', 0.4);
         this.platformGenerator(1864, 200, 'platform', 0.4);
         
+        // Stage 3
+        this.platformGenerator(2600, 200, 'platform', 1);
         
         
         /**
@@ -251,7 +261,8 @@ var gameState = {
     },
     setupPlayer: function(){
         // The player and its settings
-        this.player = game.add.sprite(32, game.world.height - 150, 'player');
+        // game.world.height - 150
+        this.player = game.add.sprite(2000, 100 , 'player');
     
         //  We need to enable physics on the player
         game.physics.arcade.enable(this.player);
@@ -320,7 +331,7 @@ var gameState = {
         // Overlaps
         
         game.physics.arcade.overlap(this.player, this.enemies, this.killPlayer, null, this);
-        game.physics.arcade.overlap(this.player, this.lavas, this.lavaPoolKillPlayer, null, this);
+       // game.physics.arcade.overlap(this.player, this.lavas, this.lavaPoolKillPlayer, null, this);
         game.physics.arcade.overlap(this.player, this.dripLavas, this.lavaDripKillPlayer, null, this);
         
         // Reset the players velocity (movement)
