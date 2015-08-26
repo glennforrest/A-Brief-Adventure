@@ -232,11 +232,14 @@ var gameState = {
          * Cloud Platforms
          */
         
-        
+        // Stage 3
+        this.platformGenerator(2100, 50, 'cloud', 1, 1, 0, -200)
     },
-    platformGenerator: function(x, y, type, scaleX, scaleY){
+    platformGenerator: function(x, y, type, scaleX, scaleY, velocityX, velocityY){
         scaleX = scaleX || 1;
         scaleY = scaleY || 1;
+        velocityX = velocityX || 0;
+        velocityY = velocityY || 0;
         
         if(type == 'platform'){
             // Create the platform object/sprite
@@ -255,9 +258,26 @@ var gameState = {
             this.wall.body.immovable = true;
         }else if (type == 'cloud'){
             this.cloud = this.cloudPlatforms.create(x, y, 'cloud');
+            this.cloud.body.velocity.x = velocityX;
+            this.cloud.body.velocity.y = velocityY;
+            this.cloud.body.bounce.set(1, 1);
+            this.cloud.body.collideWorldBounds = true;
+            this.cloud.originalPosition = {x: x, 'y': y };
+            this.cloud.originalVelocity = {'velocityX': velocityX, 'velocityY': velocityY};
             // Perhaps in here I'll be adding in the functionality to make the sprites move along a set path
         }
-        
+    },
+    killCloud: function(cloud, lava){
+        // Could play the sizzle sound here
+        if(cloud.inCamera){
+            if(this.mute == false){
+                this.SFXLavaSizzle.play('', 0, 0.7);
+            }
+        }
+        // Destroys the cloud
+        cloud.kill();
+        // Create a new cloud object with same positions and velocity as previous
+        this.platformGenerator(cloud.originalPosition.x, cloud.originalPosition.y, 'cloud', 1, 1, cloud.originalVelocity.velocityX, cloud.originalVelocity.velocityY);
     },
     setupPlayer: function(){
         // The player and its settings
@@ -333,6 +353,8 @@ var gameState = {
         game.physics.arcade.overlap(this.player, this.enemies, this.killPlayer, null, this);
        // game.physics.arcade.overlap(this.player, this.lavas, this.lavaPoolKillPlayer, null, this);
         game.physics.arcade.overlap(this.player, this.dripLavas, this.lavaDripKillPlayer, null, this);
+        game.physics.arcade.overlap(this.cloud, this.lavas, this.killCloud, null, this);
+        
         
         // Reset the players velocity (movement)
         this.player.body.velocity.x = 0;
