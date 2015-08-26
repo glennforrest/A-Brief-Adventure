@@ -55,7 +55,7 @@ var loaderState = {
         game.load.audio('introMusic','assets/sound/intro-music.wav');
         game.load.audio('victoryMusic','assets/sound/victory-music.mp3');
         
-        this.preloadBar = this.add.sprite(200, 200, 'loadingBar');
+        this.preloadBar = this.add.sprite(80, 200, 'loadingBar');
         this.load.setPreloadSprite(this.preloadBar);
         
        
