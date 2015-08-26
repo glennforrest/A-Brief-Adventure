@@ -233,7 +233,7 @@ var gameState = {
          */
         
         // Stage 3
-        this.platformGenerator(2100, 50, 'cloud', 1, 1, 0, -200)
+        this.platformGenerator(2100, 0, 'cloud', 1, 1, 0, -200)
     },
     platformGenerator: function(x, y, type, scaleX, scaleY, velocityX, velocityY){
         scaleX = scaleX || 1;
