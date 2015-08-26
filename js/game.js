@@ -64,23 +64,46 @@ var gameState = {
         
     },
     setupLava: function(){
-        this.lavas = game.add.group()
+        this.lavas = game.add.group();
         this.lavas.enableBody = true;
+        this.dripLavas = game.add.group();
+        this.dripLavas.enableBody = true;
         
+        /**
+         * Lava Pools
+         */ 
+        
+        // Stage 2 
         this.generateLava(1632, 250, 'pool', 2.3, 10);
+    
+        
+        /**
+         * Lava Drips
+         */ 
+        
+        // Stage 2
+        this.generateLava(850, 418, 'drip', 0.1, 0.6);
+        this.generateLava(1015, 418, 'drip', 0.1, 0.6, 400);
+        this.generateLava(1170, 418, 'drip', 0.1, 0.6, 1300);
+        
     },
-    generateLava: function(x, y, type, scaleX, scaleY){
+    generateLava: function(x, y, type, scaleX, scaleY, gravity){
         scaleX = scaleX || 1;
         scaleY = scaleY || 1;
-        
+        gravity = gravity || 300;
         if(type == 'pool'){
             this.lava = this.lavas.create(x, y, 'lava');
             this.lava.scale.setTo(scaleX, scaleY);
             this.lava.body.immovable = true;
         }else if (type == 'drip'){
-            this.lavaDrip = this.lavas.create(x, y, 'lava');
+            this.lavaDrip = this.dripLavas.create(x, y, 'lava');
             this.lavaDrip.scale.setTo(scaleX, scaleY);
-            this.lavaDrip.body.immovable = true;
+            //this.lavaDrip.body.immovable = true;
+            this.lavaDrip.body.gravity.y = gravity;
+            this.lavaDrip.body.bounce.set(0, 1);
+            this.lavaDrip.body.collideWorldBounds = true;
+            
+            
         }
         
     },
@@ -226,7 +249,7 @@ var gameState = {
     },
     setupPlayer: function(){
         // The player and its settings
-        this.player = game.add.sprite(32, game.world.height - 150, 'player');
+        this.player = game.add.sprite(1063, game.world.height - 150, 'player');
     
         //  We need to enable physics on the player
         game.physics.arcade.enable(this.player);
@@ -274,7 +297,9 @@ var gameState = {
         
         this.width = game.world.width;
         
-        
+        //this.dripLavas.forEach(this.drippy, this);   
+              
+       // setTimeout(drip, 15000);
         /**
          * Collisions and overlaps
          */ 
@@ -287,12 +312,13 @@ var gameState = {
         game.physics.arcade.collide(this.platforms, this.walls);
         game.physics.arcade.collide(this.enemies, this.platforms);
         game.physics.arcade.collide(this.enemies, this.walls);
+        game.physics.arcade.collide(this.dripLavas, this.platforms);
         
         // Overlaps
         
         game.physics.arcade.overlap(this.player, this.enemies, this.killPlayer, null, this);
-        game.physics.arcade.overlap(this.player, this.lava, this.lavaPoolKillPlayer, null, this);
-        game.physics.arcade.overlap(this.player, this.lavaDrip, this.lavaDripKillPlayer, null, this);
+        game.physics.arcade.overlap(this.player, this.lavas, this.lavaPoolKillPlayer, null, this);
+        game.physics.arcade.overlap(this.player, this.dripLavas, this.lavaDripKillPlayer, null, this);
         
         // Reset the players velocity (movement)
         this.player.body.velocity.x = 0;
@@ -339,6 +365,9 @@ var gameState = {
             }
         }
         
+        // Plays SFXDrip for each object/sprite
+        this.dripLavas.forEach(this.drip, this);
+        
         /**
          * Enemy update functions
          */
@@ -346,10 +375,17 @@ var gameState = {
         this.enemies.forEach(this.enemyAnimations, this);
          
         
-        
         // Setting up the camera to focus on the player
         game.camera.follow(this.player);
     }, 
+    drip: function(lavaDrip){
+        // Play the SFX of the drip here?
+        if(lavaDrip.body.touching.down){
+            if(this.mute == false){
+                this.SFXLavaDrip.play();
+            }
+        }
+    },
     toggleMusic: function() {
         this.musicIcon.alpha = 1;
         if(this.music.volume == 1){
