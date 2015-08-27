@@ -256,7 +256,7 @@ var gameState = {
         this.platformGenerator(540, 300, 'platform', 1.8);
         
         // Stage 2
-        this.platformGenerator(800, 385, 'platform', 2.6);
+        this.platformGenerator(825, 385, 'platform', 2.6);
         this.platformGenerator(800, 385, 'platform', 2.6);
         this.platformGenerator(1200, 250, 'platform', 0.8);
         this.platformGenerator(1475, 430, 'platform', 0.8);
@@ -339,8 +339,9 @@ var gameState = {
         game.physics.arcade.enable(this.player);
     
         //  Player physics properties. Give the little guy a slight bounce.
-        this.player.body.bounce.y = 0.2;
-        this.player.body.gravity.y = 300;
+        //this.player.body.bounce.y = 0.2;
+        //this.player.body.acceleration.y = -100;
+        this.player.body.gravity.y = 600;
         this.player.body.collideWorldBounds = true;
     
         //  Our two animations, walking left and right. Third parameter
@@ -423,7 +424,7 @@ var gameState = {
     
         if (this.cursors.left.isDown){
             //  Move to the left
-            this.player.body.velocity.x = -150;
+            this.player.body.velocity.x = -250;
             this.player.animations.play('left');
             if(this.player.body.touching.down){
                 // If SFX is not muted
@@ -435,7 +436,7 @@ var gameState = {
         }
         else if (this.cursors.right.isDown){
             //  Move to the right
-            this.player.body.velocity.x = 150;
+            this.player.body.velocity.x = 250;
             this.player.animations.play('right');
             if(this.player.body.touching.down){
                 // If SFX is not muted
@@ -452,7 +453,8 @@ var gameState = {
         }
         //  Allow the player to jump if they are touching the ground.
         if (this.cursors.up.isDown && this.player.body.touching.down){
-            this.player.body.velocity.y = -350;
+            
+            this.player.body.velocity.y = -480;
             // SFX sound for jumping
             if(this.mute == false){
                 this.SFXJump.play('', 0, 0.3);
