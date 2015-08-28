@@ -11,10 +11,15 @@ var gameState = {
         this.cursors = game.input.keyboard.createCursorKeys();
         
         // Add in all assets
-        
+        this.checkpointSpawnX = 32;
+        this.checkpointSpawnY = 450;
         // Game art
         game.add.tileSprite(0, 0, game.world.width, 600, 'snow'); 
         game.add.tileSprite(0, 300,game.world.width, 300, 'backgroundClouds');
+        // Setting these to default where the player spawns at the beginning
+        //this.checkpointSpawnX = 32;
+        //this.checkpointSpawnY = game.world.height - 150;
+
         this.deathCounter = 0;
         this.briefcase = game.add.sprite(game.world.width - 100, 522, 'briefcase');
         //  We need to enable physics on the player
@@ -23,7 +28,6 @@ var gameState = {
         //  Player physics properties. Give the little guy a slight bounce.
         this.briefcase.body.collideWorldBounds = true;
         this.briefcase.scale.setTo(0.3, 0.3);
-        
         
         //  Platform/Wall/Ground/Clouds
         this.setupPlatforms();
@@ -34,6 +38,8 @@ var gameState = {
         // Player & Enemies
         this.setupPlayer();
         this.setupEnemies();
+        
+        this.setupCheckpoints();
         
         this.musicIcon = game.add.image(700, 20, 'musicIcon');
         this.SFXIcon = game.add.image(750, 20, 'SFXIcon');
@@ -332,8 +338,9 @@ var gameState = {
         cloud.body.velocity.x *= -1;
     },
     setupPlayer: function(){
+        this.players = game.add.group();
         // The player and its settings
-        this.player = game.add.sprite(32, game.world.height - 150 , 'player');
+        this.player = this.players.create(this.checkpointSpawnX, this.checkpointSpawnY , 'player');
     
         //  We need to enable physics on the player
         game.physics.arcade.enable(this.player);
@@ -348,9 +355,11 @@ var gameState = {
         // is for the framerate
         this.player.animations.add('left', [0, 1, 2, 3], 10, true);
         this.player.animations.add('right', [5, 6, 7, 8], 10, true);
+        
     },
     killPlayer: function() {
     
+        game.camera.unfollow;
         this.deathCounter++;
         console.log(this.deathCounter);
         // Removes the player from the screen
@@ -359,9 +368,32 @@ var gameState = {
         if(this.mute == false){
             this.SFXDeath.play();    
         }
-        
-        this.setupPlayer();
+        //this.respawnPlayer();
+       //setTimeout(this.setupPlayer, 2000);
+       this.setupPlayer();
+       //game.state.start('game');
     },
+    respawnPlayer: function(){
+        
+        // console.log(this.checkpointSpawnX);
+        // console.log(this.checkpointSpawnY);
+        this.player.position = {x: this.checkpointSpawnX, y: this.checkpointSpawnY};
+    },
+    setupCheckpoints: function(){
+        this.checkpoints = game.add.group();
+        this.checkpoints.enableBody = true;
+        
+        
+        this.checkpointGenerator(1525, 367);
+        this.checkpointGenerator(3286, 507);
+        
+    },
+    checkpointGenerator: function(x,y){
+        this.checkpoint = this.checkpoints.create(x, y, 'flag');
+        this.checkpoint.scale.setTo(0.6, 0.6);
+        this.checkpoint.body.immovable = true;
+    }
+    ,
     lavaPoolKillPlayer: function(){
         // Play the lava splash sound
         if(this.mute == false){
@@ -375,6 +407,18 @@ var gameState = {
             this.SFXLavaSizzle.play();
         }
         this.killPlayer();
+    },
+    checkpointActivate: function(player, checkpoint){
+        // Needs to change the X and Y value of where the player will respawn,
+        
+        // Need to change the colour of the flag or something to indicate that it is activated
+        
+        // So assign the position of the checkpoint to a this.checkpointSpawn position
+        this.checkpointSpawnX = checkpoint.position.x;
+        this.checkpointSpawnY = checkpoint.position.y;
+        // Then update the setupPlayer function to call in this checkpointSpawn position
+        // If the camera tracks properly all g, otherwise maybe it would be a good idea to include
+        // the camera follow method within the setupPlayer?
     },
     update: function(){
         
@@ -411,6 +455,7 @@ var gameState = {
         game.physics.arcade.overlap(this.player, this.lavas, this.lavaPoolKillPlayer, null, this);
         game.physics.arcade.overlap(this.player, this.dripLavas, this.lavaDripKillPlayer, null, this);
         game.physics.arcade.overlap(this.player, this.briefcase, this.win, null, this);
+        game.physics.arcade.overlap(this.player, this.checkpoints, this.checkpointActivate, null, this);
         game.physics.arcade.overlap(this.cloudPlatforms, this.lavas, this.killCloud, null, this);
         game.physics.arcade.overlap(this.cloudPlatforms, this.walls, this.cloudChangeDirection, null, this);
         game.physics.arcade.overlap(this.cloudPlatforms, this.platforms, this.cloudChangeDirection, null, this);
@@ -469,9 +514,12 @@ var gameState = {
         /**
          * Camera
          */
-         
-        // Setting up the camera to focus on the player
-        game.camera.follow(this.player);
+         // Setting up the camera to focus on the player
+         if(this.player){
+            game.camera.follow(this.player); 
+         }
+        
+        
     },
     drip: function(lavaDrip){
         // Play the SFX of the drip here?
