@@ -70,6 +70,7 @@ var gameState = {
         this.SFXLavaSplash = game.add.audio('lavaSplash');
         this.SFXLavaSizzle = game.add.audio('lavaSizzle');
         this.SFXDeath = game.add.audio('death');
+        this.SFXFlag = game.add.audio('flag');
         this.music = game.add.audio('gameMusic');
         
         // Starts the music playing
@@ -410,16 +411,18 @@ var gameState = {
         this.killPlayer();
     },
     checkpointActivate: function(player, checkpoint){
-        // Needs to change the X and Y value of where the player will respawn,
-        
-        // Need to change the colour of the flag or something to indicate that it is activated
+        // Changing alpha to indicate activation
         game.add.tween(checkpoint).to({alpha: 1}, 300).start();
-        // So assign the position of the checkpoint to a this.checkpointSpawn position
+        // Assigning the position of the checkpoint to variable to pass into setupPlayer()
         this.checkpointSpawnX = checkpoint.position.x;
         this.checkpointSpawnY = checkpoint.position.y;
-        // Then update the setupPlayer function to call in this checkpointSpawn position
-        // If the camera tracks properly all g, otherwise maybe it would be a good idea to include
-        // the camera follow method within the setupPlayer?
+        
+        // Play the SFX if the checkpoint is not yet activated
+        if(checkpoint.alpha == 0.2 ){
+            if(this.mute == false){
+                this.SFXFlag.play();
+            }    
+        }
     },
     update: function(){
         
