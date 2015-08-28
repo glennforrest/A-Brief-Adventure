@@ -36,7 +36,7 @@ var loaderState = {
         
         // Miscellaneous
         game.load.image('briefcase', '/assets/images/briefcase.png');
-        
+        game.load.image('flag', '/assets/images/flag.png');
         
         /**
          * Game audio loading
