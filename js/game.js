@@ -392,6 +392,7 @@ var gameState = {
         this.checkpoint = this.checkpoints.create(x, y, 'flag');
         this.checkpoint.scale.setTo(0.6, 0.6);
         this.checkpoint.body.immovable = true;
+        this.checkpoint.alpha = 0.2;
     }
     ,
     lavaPoolKillPlayer: function(){
@@ -412,7 +413,7 @@ var gameState = {
         // Needs to change the X and Y value of where the player will respawn,
         
         // Need to change the colour of the flag or something to indicate that it is activated
-        
+        game.add.tween(checkpoint).to({alpha: 1}, 300).start();
         // So assign the position of the checkpoint to a this.checkpointSpawn position
         this.checkpointSpawnX = checkpoint.position.x;
         this.checkpointSpawnY = checkpoint.position.y;
