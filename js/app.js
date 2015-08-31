@@ -10,4 +10,15 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'content');
 
     //  Now start the Boot state.
     game.state.start('boot');
+    
+   lockedAllowed = window.screen.lockOrientation("landscape");
+   
+   var lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
 
+    if (lockOrientation("landscape")) {
+       // orientation was locked
+       alert('whoop');
+    } else {
+      // orientation lock failed
+      alert('Orientation Failed!');
+    }

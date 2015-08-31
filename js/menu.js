@@ -2,6 +2,31 @@
 /* global Phaser */
 
 var menuState = {
+    init: function(){
+        if (this.game.device.desktop){
+            this.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+            this.input.onDown.add(this.gofull, this);
+        }
+        else{
+            this.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
+            this.input.onDown.add(this.gofull, this);
+        }
+        
+        
+    },
+    
+    gofull: function() {
+
+    if (game.scale.isFullScreen)
+    {
+        game.scale.stopFullScreen();
+    }
+    else
+    {
+        game.scale.startFullScreen(false);
+    }
+
+    },
     create: function () {
         
         // Displaying Background and Text
@@ -33,6 +58,9 @@ var menuState = {
         
         // Event Listener calling the Start function to begin the game
         wKey.onDown.addOnce(this.start, this);
+        game.input.onTap.add(function(){
+            this.start();
+        });
     },
     toggleMusic: function() {
         this.musicIcon.alpha = 1;

@@ -510,6 +510,46 @@ var gameState = {
             }
         }
         
+        
+        
+        
+        /**
+         * Touch controls
+         */
+         
+        var RIGHT = 0, LEFT = 1;
+        
+        /* Divide the current tap x coordinate to half the game.width, floor it and there you go */
+         if (game.input.pointer1.isDown){
+            if (Math.floor(e.x/(this.game.width/2)) === LEFT) {
+                //do left stuff
+                this.player.body.velocity.x = -250;
+                this.player.animations.play('left');
+                if(this.player.body.touching.down){
+                    // If SFX is not muted
+                    if(this.mute == false){
+                        // Loop over the SFXFootstep
+                        this.SFXFootstep.play('', 0, 0.4, false, false);   
+                    }
+                }
+            }
+        
+            if (Math.floor(e.x/(this.game.width/2)) === RIGHT) {
+                //do right stuff
+                //  Move to the right
+                this.player.body.velocity.x = 250;
+                this.player.animations.play('right');
+                if(this.player.body.touching.down){
+                    // If SFX is not muted
+                    if(this.mute == false){
+                        // Loop over the SFXFootstep
+                        this.SFXFootstep.play('', 0, 0.4, false, false);   
+                    }
+                }
+            }
+        }
+        
+        
         /**
          * Enemy animations
          */
