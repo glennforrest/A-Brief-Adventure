@@ -11,7 +11,7 @@ var gameState = {
         this.cursors = game.input.keyboard.createCursorKeys();
         
         // Add in all assets
-        this.checkpointSpawnX = 32;
+        this.checkpointSpawnX = 155;
         this.checkpointSpawnY = 450;
         // Game art
         game.add.tileSprite(0, 0, game.world.width, 600, 'snow'); 
@@ -86,6 +86,10 @@ var gameState = {
         /**
          * Lava Pools
          */ 
+        
+        
+        // Stage 1
+        this.generateLava(31, 580, 'pool', 0.43, 1);
         
         // Stage 2 
         this.generateLava(1632, 250, 'pool', 2.3, 10);
@@ -209,7 +213,7 @@ var gameState = {
          */
         
         // Here we create the ground.
-        this.ground = this.platforms.create(1, game.world.height - 30, 'platform');
+        this.ground = this.platforms.create(100, game.world.height - 30, 'platform');
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
         this.ground.scale.setTo(game.world.width, 1);
         //  This stops it from falling away when you jump on it
@@ -242,7 +246,7 @@ var gameState = {
         this.platformGenerator(3200, 200, 'wall', 1, 2.6);
         
         // Stage 4
-        this.platformGenerator(3536, 0, 'wall', 1, 2.32);
+        this.platformGenerator(3536, 0, 'wall', 1, 2.08);
         this.platformGenerator(3536, 550, 'wall', 1, 1);
         this.platformGenerator(3747, 550, 'wall', 1, 1);
         this.platformGenerator(3837, 550, 'wall', 1, 1);
@@ -275,7 +279,7 @@ var gameState = {
         this.platformGenerator(2600, 200, 'platform', 1);
         
         // Stage 4
-        this.platformGenerator(3536, 370, 'platform', 6);
+        this.platformGenerator(3536, 300, 'platform', 6);
         
         /**
          * Cloud Platforms
@@ -394,8 +398,7 @@ var gameState = {
         this.checkpoint.scale.setTo(0.6, 0.6);
         this.checkpoint.body.immovable = true;
         this.checkpoint.alpha = 0.2;
-    }
-    ,
+    },
     lavaPoolKillPlayer: function(){
         // Play the lava splash sound
         if(this.mute == false){
@@ -463,6 +466,7 @@ var gameState = {
         game.physics.arcade.overlap(this.cloudPlatforms, this.lavas, this.killCloud, null, this);
         game.physics.arcade.overlap(this.cloudPlatforms, this.walls, this.cloudChangeDirection, null, this);
         game.physics.arcade.overlap(this.cloudPlatforms, this.platforms, this.cloudChangeDirection, null, this);
+        game.physics.arcade.overlap(this.enemies, this.lavas, this.killEnemies, null, this);
         
         /**
          * Player Movement
@@ -517,12 +521,9 @@ var gameState = {
          * Touch controls
          */
          
-        var RIGHT = 0, LEFT = 1;
-        
-        /* Divide the current tap x coordinate to half the game.width, floor it and there you go */
-         if (game.input.pointer1.isDown){
-            if (Math.floor(e.x/(this.game.width/2)) === LEFT) {
-                //do left stuff
+      
+        // /* Divide the current tap x coordinate to half the game.width, floor it and there you go */
+            if(game.input.pointer1.x < 400 && game.input.pointer1.isDown){
                 this.player.body.velocity.x = -250;
                 this.player.animations.play('left');
                 if(this.player.body.touching.down){
@@ -532,10 +533,7 @@ var gameState = {
                         this.SFXFootstep.play('', 0, 0.4, false, false);   
                     }
                 }
-            }
-        
-            if (Math.floor(e.x/(this.game.width/2)) === RIGHT) {
-                //do right stuff
+            }else if (game.input.pointer1.x > 400 && game.input.pointer1.isDown){
                 //  Move to the right
                 this.player.body.velocity.x = 250;
                 this.player.animations.play('right');
@@ -546,14 +544,46 @@ var gameState = {
                         this.SFXFootstep.play('', 0, 0.4, false, false);   
                     }
                 }
+            }            
+    var swipeCoordX,
+    swipeCoordY,
+    swipeCoordX2,
+    swipeCoordY2,
+    swipeMinDistance = 100;
+
+    game.input.onDown.add(function(pointer) {
+        swipeCoordX = pointer.clientX;
+        swipeCoordY = pointer.clientY;    
+    }, this);
+
+    game.input.onUp.add(function(pointer) {
+        swipeCoordX2 = pointer.clientX;
+        swipeCoordY2 = pointer.clientY;
+        if(swipeCoordX2 < swipeCoordX - swipeMinDistance){
+            console.log("left");
+        }else if(swipeCoordX2 > swipeCoordX + swipeMinDistance){
+            console.log("right");
+        }else if(swipeCoordY2 < swipeCoordY - swipeMinDistance){
+            //  Allow the player to jump if they are touching the ground.
+            if (this.cursors.up.isDown && this.player.body.touching.down){
+                
+                this.player.body.velocity.y = -480;
+                // SFX sound for jumping
+                if(this.mute == false){
+                    this.SFXJump.play('', 0, 0.3);
+                }
             }
+        }else if(swipeCoordY2 > swipeCoordY + swipeMinDistance){
+            console.log("down");
         }
+    }, this); 
         
         
         /**
          * Enemy animations
          */
         this.enemies.forEach(this.enemyAnimations, this);
+         
          
         /**
          * Camera
@@ -563,6 +593,12 @@ var gameState = {
             game.camera.follow(this.player); 
          }
         
+        
+    },
+    killEnemies: function(enemy){
+            console.log('here');
+            enemy.kill();
+            this.enemyGenerator(475, 50, 'left');
         
     },
     drip: function(lavaDrip){
