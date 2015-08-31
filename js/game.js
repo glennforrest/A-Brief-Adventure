@@ -4,6 +4,9 @@ var gameState = {
     
     create: function(){
         
+        // Setting up gestures for swiping
+        this.gestures = new Gesture(game);
+        this.gestures.onSwipe.add(this.swiped, this);
         // Setting the bounds of the world
         game.world.setBounds(0, 0, 5000, 600);
         
@@ -515,14 +518,13 @@ var gameState = {
         }
         
         
-        
-        
         /**
          * Touch controls
          */
          
+         this.gestures.update();
       
-        // /* Divide the current tap x coordinate to half the game.width, floor it and there you go */
+        /* Divide the current tap x coordinate to half the game.width, floor it and there you go */
             if(game.input.pointer1.x < 400 && game.input.pointer1.isDown){
                 this.player.body.velocity.x = -250;
                 this.player.animations.play('left');
@@ -545,40 +547,7 @@ var gameState = {
                     }
                 }
             }            
-    var swipeCoordX,
-    swipeCoordY,
-    swipeCoordX2,
-    swipeCoordY2,
-    swipeMinDistance = 100;
-
-    game.input.onDown.add(function(pointer) {
-        swipeCoordX = pointer.clientX;
-        swipeCoordY = pointer.clientY;    
-    }, this);
-
-    game.input.onUp.add(function(pointer) {
-        swipeCoordX2 = pointer.clientX;
-        swipeCoordY2 = pointer.clientY;
-        if(swipeCoordX2 < swipeCoordX - swipeMinDistance){
-            console.log("left");
-        }else if(swipeCoordX2 > swipeCoordX + swipeMinDistance){
-            console.log("right");
-        }else if(swipeCoordY2 < swipeCoordY - swipeMinDistance){
-            //  Allow the player to jump if they are touching the ground.
-            if (this.cursors.up.isDown && this.player.body.touching.down){
-                
-                this.player.body.velocity.y = -480;
-                // SFX sound for jumping
-                if(this.mute == false){
-                    this.SFXJump.play('', 0, 0.3);
-                }
-            }
-        }else if(swipeCoordY2 > swipeCoordY + swipeMinDistance){
-            console.log("down");
-        }
-    }, this); 
-        
-        
+            
         /**
          * Enemy animations
          */
@@ -648,6 +617,15 @@ var gameState = {
         this.music.stop();
         // Starts the game state
         game.state.start('win');
-    }
+    },
+    swiped: function(){
+        if(this.player.body.touching.down){
+           this.player.body.velocity.y = -480;
+                // SFX sound for jumping
+                if(this.mute == false){
+                    this.SFXJump.play('', 0, 0.3);
+                }
+            }
+        }
     
 };
