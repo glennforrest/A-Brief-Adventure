@@ -39,6 +39,9 @@ var winState = {
         // Event Listener calling the Start function to begin the game
         wKey.onDown.addOnce(menuState.start, this);
         
+        if(!game.device.desktop){
+            this.input.onDown.add(this.start, this);
+        }
         
     },
     update: function(){
