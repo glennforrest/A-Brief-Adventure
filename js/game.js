@@ -154,28 +154,30 @@ var gameState = {
          */
         
         // Stage 1 
-        this.enemyGenerator(240, 522, 'right');
+        //this.enemyGenerator(240, 522, 'right');
         this.enemyGenerator(38, 232, 'right');
-        this.enemyGenerator(550, 50, 'left');
-        this.enemyGenerator(750, 200, 'right');
-        this.enemyGenerator(440, 522, 'right');
-        this.enemyGenerator(1254, 522, 'left');
+        this.enemyGenerator(430, 50, 'left');
+        this.enemyGenerator(750, 200, 'right', 'bounce');
+        this.enemyGenerator(440, 522, 'right', 'bounce');
+        this.enemyGenerator(1254, 522, 'left', 'bounce');
         
         
         // Stage 3
-        this.enemyGenerator(2650, 160, 'right');
+        this.enemyGenerator(2650, 160, 'right', 'bounce');
         
         // Stage 4
-        this.enemyGenerator(3600, 522, 'right');
-        this.enemyGenerator(3900, 522, 'right');
-        this.enemyGenerator(4080, 522, 'left');
-        this.enemyGenerator(4100, 522, 'left');
-        this.enemyGenerator(4450, 522, 'left');
+        this.enemyGenerator(3600, 522, 'right', 'bounce');
+        this.enemyGenerator(3900, 522, 'right', 'bounce');
+        this.enemyGenerator(4080, 522, 'left', 'bounce');
+        this.enemyGenerator(4100, 522, 'left', 'bounce');
+        this.enemyGenerator(4450, 522, 'left', 'bounce');
     },
-    enemyGenerator: function(x, y, direction){
+    enemyGenerator: function(x, y, direction, bounce){
         this.enemy = this.enemies.create(x,y,'enemy');
         this.enemy.body.gravity.y = 300;
-        this.enemy.body.bounce.set(1, 0.2);
+        bounce = bounce || '';
+        
+        this.enemy.body.bounce.set(1, 0.2);    
         this.enemy.body.collideWorldBounds = true;
         //  Our two animations, walking left and right.
         this.enemy.animations.add('left', [0, 1], 10, true);
@@ -183,10 +185,19 @@ var gameState = {
         // This will set them off in the direction wanted 
         if(direction == 'right'){
             this.enemy.animations.play('right', 10, true); // get enemy moving
-            this.enemy.body.velocity.setTo(150);  
+            if(bounce == 'bounce'){
+                this.enemy.body.velocity.setTo(150);
+            }else{
+                this.enemy.body.velocity.x = 150;    
+            }
+              
         }else if(direction == 'left'){
             this.enemy.animations.play('left', 10, true); // get enemy moving
-            this.enemy.body.velocity.setTo(-150);  
+            if(bounce == 'bounce'){
+                this.enemy.body.velocity.setTo(-150);
+            }else{
+                this.enemy.body.velocity.x = -150;  
+            }        
         }
     },
     enemyAnimations: function(enemy){
@@ -369,7 +380,7 @@ var gameState = {
     
         game.camera.unfollow;
         this.deathCounter++;
-        console.log(this.deathCounter);
+        
         // Removes the player from the screen
         this.player.kill();
         // Play the death sound
@@ -565,9 +576,9 @@ var gameState = {
         
     },
     killEnemies: function(enemy){
-            console.log('here');
+           
             enemy.kill();
-            this.enemyGenerator(475, 50, 'left');
+            this.enemyGenerator(112, 44, 'left');
         
     },
     drip: function(lavaDrip){
