@@ -1,34 +1,47 @@
 /* global game */
+/* global Gesture */
 
 var gameState = {
     
     create: function(){
         
+        // Setting the bounds of the world
+        game.world.setBounds(0, 0, 5000, 600);
+        
+        /**
+         * Setting up controls
+         */ 
+        
         // Setting up gestures for swiping
         this.gestures = new Gesture(game);
         this.gestures.onSwipe.add(this.swiped, this);
-        // Setting the bounds of the world
-        game.world.setBounds(0, 0, 5000, 600);
         
         // Setting up arrow keys to move player
         this.cursors = game.input.keyboard.createCursorKeys();
         
-        // Add in all assets
+        
+        /**
+         * Initialising things
+         */
+         
+        // Setting up player spawn points
         this.checkpointSpawnX = 155;
         this.checkpointSpawnY = 450;
+        
+        // Initialising death counter to 0
+        this.deathCounter = 0;
+        
+        /**
+         * Adding all assets
+         */ 
+        
         // Game art
         game.add.tileSprite(0, 0, game.world.width, 600, 'snow'); 
         game.add.tileSprite(0, 300,game.world.width, 300, 'backgroundClouds');
-        // Setting these to default where the player spawns at the beginning
-        //this.checkpointSpawnX = 32;
-        //this.checkpointSpawnY = game.world.height - 150;
-
-        this.deathCounter = 0;
+        
+        // Setting up the briefcase
         this.briefcase = game.add.sprite(game.world.width - 100, 522, 'briefcase');
-        //  We need to enable physics on the player
         game.physics.arcade.enable(this.briefcase);
-    
-        //  Player physics properties. Give the little guy a slight bounce.
         this.briefcase.body.collideWorldBounds = true;
         this.briefcase.scale.setTo(0.3, 0.3);
         
@@ -38,21 +51,29 @@ var gameState = {
         // Lava
         this.setupLava();
         
-        // Player & Enemies
+        // Player
         this.setupPlayer();
+        
+        // Enemy
         this.setupEnemies();
         
+        // Checkpoint
         this.setupCheckpoints();
+        
+        /**
+         * Music and SFX buttons and functionality
+         */
         
         this.musicIcon = game.add.image(700, 20, 'musicIcon');
         this.SFXIcon = game.add.image(750, 20, 'SFXIcon');
-        // Enables all kind of input actions on this image (click, etc)
         this.musicIcon.alpha = 0.5;
         this.SFXIcon.alpha = 0.5;
+        // Enabling input, Fixing position to camera
         this.musicIcon.inputEnabled = true;
         this.musicIcon.fixedToCamera = true;
         this.SFXIcon.inputEnabled = true;
         this.SFXIcon.fixedToCamera = true;
+        
         // Adding the hover transparency
         this.musicIcon.events.onInputOver.add(this.hoverOverMusic, this);
         this.musicIcon.events.onInputOut.add(this.onBlurMusic, this);
@@ -65,7 +86,8 @@ var gameState = {
         this.musicIcon.events.onInputDown.add(this.toggleMusic, this);
         // Adding the event listener and calling toggleMusic method
         this.SFXIcon.events.onInputDown.add(this.toggleSFX, this);
-        // Sounds
+        
+        // Adding sounds
         this.mute = false;
         this.SFXJump = game.add.audio('jump');
         this.SFXFootstep = game.add.audio('step');
@@ -81,6 +103,7 @@ var gameState = {
         
     },
     setupLava: function(){
+        // Creating lava and drip lava groups and enabling body
         this.lavas = game.add.group();
         this.lavas.enableBody = true;
         this.dripLavas = game.add.group();
@@ -89,7 +112,6 @@ var gameState = {
         /**
          * Lava Pools
          */ 
-        
         
         // Stage 1
         this.generateLava(31, 580, 'pool', 0.43, 1);
@@ -141,6 +163,31 @@ var gameState = {
             this.lavaDrip.body.collideWorldBounds = true;
         }
     },
+    lavaPoolKillPlayer: function(){
+        // Play the lava splash sound
+        if(this.mute == false){
+            this.SFXLavaSplash.play();
+        }
+        this.killPlayer();
+    },
+    lavaDripKillPlayer: function(){
+        // Play the lava splash sound
+        if(this.mute == false){
+            this.SFXLavaSizzle.play();
+        }
+        this.killPlayer();
+    },
+    drip: function(lavaDrip){
+        if(lavaDrip.inCamera){
+            if(lavaDrip.body.touching.down){
+                if(this.mute == false){
+                    // If the drip is in camera and hits the ground
+                    // play the SFX
+                    this.SFXLavaDrip.play();
+                }
+            }    
+        }
+    },
     setupEnemies: function(){
         
         // Adding in the enemies group
@@ -160,7 +207,6 @@ var gameState = {
         this.enemyGenerator(750, 200, 'right', 'bounce');
         this.enemyGenerator(440, 522, 'right', 'bounce');
         this.enemyGenerator(1254, 522, 'left', 'bounce');
-        
         
         // Stage 3
         this.enemyGenerator(2650, 160, 'right', 'bounce');
@@ -206,6 +252,10 @@ var gameState = {
         }else if(enemy.body.velocity.x== -150){
             enemy.animations.play('left', 10, true); // get enemy moving
         }  
+    },
+    killEnemies: function(enemy){
+        enemy.kill();
+        this.enemyGenerator(112, 44, 'left');
     },
     setupPlatforms: function(){
         
@@ -260,7 +310,7 @@ var gameState = {
         this.platformGenerator(3200, 200, 'wall', 1, 2.6);
         
         // Stage 4
-        this.platformGenerator(3536, 0, 'wall', 1, 2.08);
+        this.platformGenerator(3536, 0, 'wall', 1, 1.88);
         this.platformGenerator(3536, 550, 'wall', 1, 1);
         this.platformGenerator(3747, 550, 'wall', 1, 1);
         this.platformGenerator(3837, 550, 'wall', 1, 1);
@@ -341,9 +391,9 @@ var gameState = {
         }
     },
     killCloud: function(cloud, lava){
-        // Could play the sizzle sound here
         if(cloud.inCamera){
             if(this.mute == false){
+                // If cloud is in camera play the SFX
                 this.SFXLavaSizzle.play('', 0, 0.7);
             }
         }
@@ -364,9 +414,7 @@ var gameState = {
         //  We need to enable physics on the player
         game.physics.arcade.enable(this.player);
     
-        //  Player physics properties. Give the little guy a slight bounce.
-        //this.player.body.bounce.y = 0.2;
-        //this.player.body.acceleration.y = -100;
+        //  Player physics properties.
         this.player.body.gravity.y = 600;
         this.player.body.collideWorldBounds = true;
     
@@ -377,32 +425,21 @@ var gameState = {
         
     },
     killPlayer: function() {
-    
-        game.camera.unfollow;
+        // Increase the death counter
         this.deathCounter++;
-        
         // Removes the player from the screen
         this.player.kill();
         // Play the death sound
         if(this.mute == false){
             this.SFXDeath.play();    
         }
-        //this.respawnPlayer();
-       //setTimeout(this.setupPlayer, 2000);
-       this.setupPlayer();
-       //game.state.start('game');
-    },
-    respawnPlayer: function(){
-        
-        // console.log(this.checkpointSpawnX);
-        // console.log(this.checkpointSpawnY);
-        this.player.position = {x: this.checkpointSpawnX, y: this.checkpointSpawnY};
+        this.setupPlayer();
     },
     setupCheckpoints: function(){
         this.checkpoints = game.add.group();
         this.checkpoints.enableBody = true;
         
-        
+        // Individual Checkpoint setup
         this.checkpointGenerator(1525, 367);
         this.checkpointGenerator(3286, 507);
         
@@ -413,32 +450,18 @@ var gameState = {
         this.checkpoint.body.immovable = true;
         this.checkpoint.alpha = 0.2;
     },
-    lavaPoolKillPlayer: function(){
-        // Play the lava splash sound
-        if(this.mute == false){
-            this.SFXLavaSplash.play();
-        }
-        this.killPlayer();
-    },
-    lavaDripKillPlayer: function(){
-        // Play the lava splash sound
-        if(this.mute == false){
-            this.SFXLavaSizzle.play();
-        }
-        this.killPlayer();
-    },
     checkpointActivate: function(player, checkpoint){
-        // Changing alpha to indicate activation
-        game.add.tween(checkpoint).to({alpha: 1}, 300).start();
-        // Assigning the position of the checkpoint to variable to pass into setupPlayer()
-        this.checkpointSpawnX = checkpoint.position.x;
-        this.checkpointSpawnY = checkpoint.position.y;
-        
-        // Play the SFX if the checkpoint is not yet activated
+        // If checkpoint is inactive, activate
         if(checkpoint.alpha == 0.2 ){
             if(this.mute == false){
+                // Play the SFX if the checkpoint is not yet activated
                 this.SFXFlag.play();
-            }    
+            }  
+            // Changing alpha to indicate activation
+            game.add.tween(checkpoint).to({alpha: 1}, 300).start();
+            // Assigning the position of the checkpoint to variable to pass into setupPlayer()
+            this.checkpointSpawnX = checkpoint.position.x;
+            this.checkpointSpawnY = checkpoint.position.y;
         }
     },
     update: function(){
@@ -570,26 +593,10 @@ var gameState = {
          */
          // Setting up the camera to focus on the player
          if(this.player){
-            game.camera.follow(this.player); 
+            game.camera.follow(this.player);
          }
         
         
-    },
-    killEnemies: function(enemy){
-           
-            enemy.kill();
-            this.enemyGenerator(112, 44, 'left');
-        
-    },
-    drip: function(lavaDrip){
-        // Play the SFX of the drip here?
-        if(lavaDrip.inCamera){
-            if(lavaDrip.body.touching.down){
-                if(this.mute == false){
-                    this.SFXLavaDrip.play();
-                }
-            }    
-        }
     },
     toggleMusic: function() {
         this.musicIcon.alpha = 1;
@@ -623,12 +630,6 @@ var gameState = {
             this.SFXIcon.tint = 0xffffff;
         }
     },
-    win: function(){
-        // Stops the music
-        this.music.stop();
-        // Starts the game state
-        game.state.start('win');
-    },
     swiped: function(){
         if(this.player.body.touching.down){
            this.player.body.velocity.y = -480;
@@ -637,6 +638,11 @@ var gameState = {
                     this.SFXJump.play('', 0, 0.3);
                 }
             }
-        }
-    
+        },
+    win: function(){
+        // Stops the music
+        this.music.stop();
+        // Starts the game state
+        game.state.start('win');
+    }
 };

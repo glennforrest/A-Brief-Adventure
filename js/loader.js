@@ -4,6 +4,7 @@ var loaderState = {
     
     preload: function () {
         
+        // Rendering the background, loading bar and text
         game.add.sprite(0, 0, 'space');
         game.add.sprite(80, 200, 'loadingBarContainer');
         // Adding a loading text onto the screen
@@ -52,22 +53,19 @@ var loaderState = {
         game.load.audio('flag','assets/sound/flag.mp3');
         
         //Music
-        
         game.load.audio('introMusic','assets/sound/intro-music.wav');
         game.load.audio('victoryMusic','assets/sound/victory-music.mp3');
         
+        // Creating the loading bar
         this.preloadBar = this.add.sprite(80, 200, 'loadingBar');
         this.load.setPreloadSprite(this.preloadBar);
         
-       
-        
     },
     update: function(){
-        if (this.cache.isSoundDecoded('introMusic') )
-		{
-			// now you can safely change state and music will play instantly on desktop (mobile still requires a touch unlock though 
-			// (Need to look this up later))
-		game.state.start('menu');
+        
+        if (this.cache.isSoundDecoded('introMusic') ){
+			// If the sound is cached, start the next state
+		    game.state.start('menu');
 		}
     }
 };
