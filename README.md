@@ -9,4 +9,4 @@ Javascript based traditional platform game using game engine Phaser.js featuring
 
 Website live [here](http://glennforrest.co.nz/a-brief-adventure/)
 
->Download the music from the game here! <a href="http://glennforrest.co.nz/a-brief-adventure/assets/sound/A-Brief-Adventure-Music.mp3" download>A Brief Adventure Music</a>
+>Download the music from the game [here!](http://glennforrest.co.nz/a-brief-adventure/music-download.php)
