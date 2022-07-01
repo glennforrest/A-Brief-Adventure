@@ -16,28 +16,28 @@ var loaderState = {
          **/ 
          
         // Sprites
-        game.load.spritesheet('player', '/assets/images/player.png', 32, 48);
-        game.load.spritesheet('enemy', '/assets/images/enemy.png', 32, 32);
+        game.load.spritesheet('player', 'assets/images/player.png', 32, 48);
+        game.load.spritesheet('enemy', 'assets/images/enemy.png', 32, 32);
             
         // Backgrounds
-        game.load.image('snow', '/assets/images/snow.png');
-        game.load.image('transition', '/assets/images/transition.png');
-        game.load.image('backgroundClouds', '/assets/images/whiteclouds.png');
-        game.load.image('lava', '/assets/images/lava.png');
+        game.load.image('snow', 'assets/images/snow.png');
+        game.load.image('transition', 'assets/images/transition.png');
+        game.load.image('backgroundClouds', 'assets/images/whiteclouds.png');
+        game.load.image('lava', 'assets/images/lava.png');
         game.load.audio('gameMusic','assets/sound/game-music.mp3');
         
         // Platforms
-        game.load.image('platform', '/assets/images/platform.png');
-        game.load.image('wall', '/assets/images/wall.png');
-        game.load.image('cloud', '/assets/images/cloud-platform.png');
+        game.load.image('platform', 'assets/images/platform.png');
+        game.load.image('wall', 'assets/images/wall.png');
+        game.load.image('cloud', 'assets/images/cloud-platform.png');
         
         // Buttons
-        game.load.image('musicIcon', '/assets/images/music-icon.png');
-        game.load.image('SFXIcon', '/assets/images/SFX-icon.png');
+        game.load.image('musicIcon', 'assets/images/music-icon.png');
+        game.load.image('SFXIcon', 'assets/images/SFX-icon.png');
         
         // Miscellaneous
-        game.load.image('briefcase', '/assets/images/briefcase.png');
-        game.load.image('flag', '/assets/images/flag.png');
+        game.load.image('briefcase', 'assets/images/briefcase.png');
+        game.load.image('flag', 'assets/images/flag.png');
         
         /**
          * Game audio loading
