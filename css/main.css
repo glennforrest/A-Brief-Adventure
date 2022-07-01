@@ -51,7 +51,7 @@ blockquote, q {
 /* Main Styles */
 
 body{
-    background-image:url("./assets/images/pattern.svg");
+    background-image:url("/A-Brief-Adventure/assets/images/pattern.svg");
 }
 canvas{
     margin:auto;
