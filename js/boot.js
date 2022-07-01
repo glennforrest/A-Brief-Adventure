@@ -6,10 +6,10 @@ var bootState = {
     preload: function () {
         // Loading assets needed for Loading screen
         // Ie. Background, loading bar, and orientation image
-        game.load.image('space', '/assets/images/space.png');
-        game.load.image('loadingBar', '/assets/images/loading-bar.png');
-        game.load.image('loadingBarContainer', '/assets/images/loading-bar-container.png');
-        game.load.image('orientation', '/assets/images/orientation.png');
+        game.load.image('space', 'assets/images/space.png');
+        game.load.image('loadingBar', 'assets/images/loading-bar.png');
+        game.load.image('loadingBarContainer', 'assets/images/loading-bar-container.png');
+        game.load.image('orientation', 'assets/images/orientation.png');
     },
     create: function () {
         // setup game environment
